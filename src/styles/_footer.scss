@@ -38,20 +38,20 @@
 .footer__items {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
 }
 .footer__item {
   cursor: pointer;
 }
 
 .footer__item-link svg {
-  width: 36px;
-  height: 36px;
+  width: 25px;
+  height: 25px;
 }
 
 .footer__item-link-rss svg {
-  width: 100px;
-  height: 36px;
+  width: 70px;
+  height: 30px;
 }
 
 .footer__copyright {
@@ -62,19 +62,5 @@
 @media screen and (max-width: 575px) {
   .footer_up-text {
     font-size: 30px;
-  }
-
-  .footer__items {
-    gap: 5px;
-  }
-
-  .footer__item-link svg {
-    width: 30px;
-    height: 30px;
-  }
-
-  .footer__item-link-rss svg {
-    width: 84px;
-    height: 30px;
   }
 }
