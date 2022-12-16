@@ -8,7 +8,7 @@
     "build": "webpack --config ./webpack.config.js --env mode=prod",
     "lint": "eslint . --ext .ts",
     "lint1": "eslint --fix",
-    "deploy": "gh-pages -d ../dist -e migration-newip-to-ts"
+    "deploy": "gh-pages -d ../dist -e online-store"
   },
   "repository": {
     "type": "git",
