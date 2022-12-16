@@ -1,7 +1,5 @@
+@import './var';
+@import './global';
 @import './normalize';
-
-$bodyColor: green;
-
-body {
-    background: $bodyColor;
-}
+@import './header';
+@import './footer';
