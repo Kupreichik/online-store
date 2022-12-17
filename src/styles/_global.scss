@@ -42,14 +42,9 @@ p {
 body {
   font-family: 'Playfair Display', serif;
   font-size: 16px;
+  font-weight: 500;
   color: $black;
   margin: 0 auto;
-}
-
-@media screen and (max-width: 575px) {
-  body {
-    font-size: 14px;
-  }
 }
 
 svg path {
@@ -71,10 +66,22 @@ svg:hover path {
 .container {
   max-width: 1440px;
   width: 100%;
-  padding: 0 20px;
+  padding: 0 50px;
   margin: 0 auto;
 }
 
 .footer {
   margin-top: auto;
+}
+
+@media screen and (max-width: 1024px) {
+  .container {
+    padding: 0 20px;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  body {
+    font-size: 14px;
+  }
 }
