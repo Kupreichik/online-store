@@ -1,0 +1,83 @@
+.products-page__top {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid $lightGrey;
+  padding-bottom: 1.5em;
+}
+
+.products-page__top_left {
+  width: 50%;
+}
+
+.products-page__heading {
+  font-size: 3em;
+  font-weight: 700;
+  color: $green;
+  position: relative;
+}
+
+.products-page__heading::after {
+  content: '';
+  position: absolute;
+  top: -17px;
+  width: 60px;
+  height: 60px;
+  background-image: url(../assets/img/leaf.svg);
+  background-repeat: no-repeat;
+  background-size: 60px;
+}
+
+.products-page__text {
+  margin-top: 0.5em;
+  color: $grey;
+}
+
+.products-page__top_right {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.products-page__sort-form {
+  width: fit-content;
+  margin-left: auto;
+  margin-bottom: -15px;
+}
+
+.products-page__sort-select {
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+.products-page__sort-fieldset {
+  border: 1px solid $lightGrey;
+  padding: 0.35em 0.75em 0.2em;
+  height: 3.1em;
+}
+
+.products-page__sort-fieldset:hover {
+  color: $green;
+}
+
+.products-page__search-form {
+  float: right;
+}
+
+.products-page__search-input {
+  width: 200px;
+  height: 42px;
+  margin-left: auto;
+  padding-left: 15px;
+  border: 1px solid $lightGrey;
+  outline: none;
+  position: relative;
+  transition: 0.3s linear;
+  background: url(../assets/img/search.svg) no-repeat right 10px center, #ffffffcc;
+}
+
+.products-page__search-input:focus {
+  width: 250px;
+}
