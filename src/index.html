@@ -64,20 +64,28 @@
             <form class="products__search-form">
               <input class="products__search-input" type="text" placeholder="Quick Search...">
             </form>
-            <div class="products__sort-wrapper"></div>
-            <form class="products__sort-form">
-              <fieldset class="products__sort-fieldset">
-                <legend>Sort By: </legend>
-                <select name="sort" class="products__sort-select">
-                  <option class="products__sort-option" value="default" selected="true">Most Popular</option>
-                  <option class="products__sort-option" value="alphabetAZ">Alphabet A - Z</option>
-                  <option class="products__sort-option" value="alphabetZA">Alphabet Z - A</option>
-                  <option class="products__sort-option" value="priceASC">$ Low to High</option>
-                  <option class="products__sort-option" value="priceDESC">$ High to Low</option>
-                </select>
-              </fieldset>
-            </form>
+            <div class="products__sort-wrapper">
+              <form class="products__sort-form">
+                <fieldset class="products__sort-fieldset">
+                  <legend>Sort By: </legend>
+                  <select name="sort" class="products__sort-select">
+                    <option class="products__sort-option" value="default" selected="true">Most Popular</option>
+                    <option class="products__sort-option" value="alphabetAZ">Alphabet A - Z</option>
+                    <option class="products__sort-option" value="alphabetZA">Alphabet Z - A</option>
+                    <option class="products__sort-option" value="priceASC">$ Low to High</option>
+                    <option class="products__sort-option" value="priceDESC">$ High to Low</option>
+                  </select>
+                </fieldset>
+              </form>
+              <div class="products__sort-btns">
+                <div class="products__sort-tile checked"></div>
+                <div class="products__sort-list"></div>
+              </div>
+            </div>
           </div>
+        </div>
+        <div class="products__found">
+          Found: <span>24</span>
         </div>
       </main>
       <footer class="footer container">
