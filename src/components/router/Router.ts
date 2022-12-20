@@ -1,8 +1,8 @@
 import { Route } from '../../types/interfaces';
 import { callbackType, routerMode } from '../../types/types';
 
-class Router<T> {
-  routes: Route<T>[];
+class Router {
+  routes: Route[];
   mode: routerMode;
   root: string;
   current: string | null;
@@ -16,9 +16,8 @@ class Router<T> {
     this.listen();
   }
 
-  add = (path: RegExp, cb: callbackType<T>): this => {
+  add = (path: RegExp, cb: callbackType): this => {
     this.routes.push({ path, cb });
-    console.log(this.routes);
     return this;
   };
 
@@ -66,16 +65,15 @@ class Router<T> {
     window.addEventListener('hashchange', this.resolveRoute);
   };
 
-  resolveRoute = () => {
+  resolveRoute = (): void => {
     if (!this.current) this.navigate(this.root);
     if (this.current === this.getFragment()) return;
     this.current = this.getFragment();
 
-    this.routes.some((route: { path: RegExp; cb: callbackType<T> }) => {
-      const match = (this.current as string).match(route.path);
+    this.routes.some((route) => {
+      const match: RegExpMatchArray | null = (this.current as string).match(route.path);
       if (match) {
         match.shift();
-        console.log(match, ' match', typeof match);
         route.cb.apply({}, match);
         return match;
       }
@@ -85,4 +83,3 @@ class Router<T> {
 }
 
 export default Router;
-//match[0] as [n: number]: string

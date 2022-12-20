@@ -1,8 +1,8 @@
 import { callbackType } from './types';
 
-export interface Route<T> {
+export interface Route {
   path: RegExp;
-  cb: callbackType<T>;
+  cb: callbackType;
 }
 
 export interface Product {

@@ -1,7 +1,7 @@
 import Router from '../router/Router';
 
 export class App {
-  router: Router<RegExpMatchArray>;
+  router: Router;
 
   constructor() {
     this.router = new Router({
@@ -19,9 +19,8 @@ export class App {
       .add(/cart/, () => {
         el.textContent = 'You are in cart';
       })
-      .add(/id\/([0-9]*)/, (match) => {
-        //const id: string = match ? match[0] : '';
-        el.textContent = `${match} - product id`;
+      .add(/id\/([0-9]*)/, (id: string) => {
+        el.textContent = `${id} - product id`;
       });
   }
 }
