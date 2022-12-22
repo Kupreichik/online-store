@@ -2,6 +2,7 @@ import { DEFAULT_STATE } from '../../state/State';
 import { CategoryFilter } from '../filters/CategoryFiter';
 import { LightFilter } from '../filters/LightFilter';
 import { PriceFilter } from '../filters/PriceFilter';
+import { SearchFilter } from '../filters/SearchFilter';
 import { StockFilter } from '../filters/StockFilter';
 
 export class Main {
@@ -9,6 +10,7 @@ export class Main {
   lightFilter: LightFilter = new LightFilter(DEFAULT_STATE.filters.light);
   priceFilter: PriceFilter = new PriceFilter();
   stockFilter: StockFilter = new StockFilter();
+  search: SearchFilter = new SearchFilter();
 
   render(): string {
     return `
@@ -19,9 +21,7 @@ export class Main {
               guarantee!</p>
           </div>
           <div class="products__top_right">
-            <form class="products__search-form">
-              <input class="products__search-input" type="text" placeholder="Quick Search...">
-            </form>
+            ${this.search.render()}
             <div class="products__sort-wrapper">
               <form class="products__sort-form">
                 <fieldset class="products__sort-fieldset">
