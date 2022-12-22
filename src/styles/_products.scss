@@ -275,16 +275,8 @@ input[type=range]::-webkit-slider-thumb::before {
   position: absolute;
 }
 
-.products__range input[type=range]:nth-child(1)::-webkit-slider-thumb::before {
-  background-color: red;
-}
-
 .products__range input[type=range]:nth-child(2) {
   background: none;
-}
-
-.products__range input[type=range]:nth-child(2)::-webkit-slider-thumb::before {
-  background-color: grey;
 }
 
 .products__container {

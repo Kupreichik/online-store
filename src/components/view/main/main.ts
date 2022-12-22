@@ -1,10 +1,14 @@
 import { DEFAULT_STATE } from '../../state/State';
 import { CategoryFilter } from '../filters/CategoryFiter';
 import { LightFilter } from '../filters/LightFilter';
+import { PriceFilter } from '../filters/PriceFilter';
+import { StockFilter } from '../filters/StockFilter';
 
 export class Main {
   categoryFilter: CategoryFilter = new CategoryFilter(DEFAULT_STATE.filters.category);
   lightFilter: LightFilter = new LightFilter(DEFAULT_STATE.filters.light);
+  priceFilter: PriceFilter = new PriceFilter();
+  stockFilter: StockFilter = new StockFilter();
 
   render(): string {
     return `
@@ -54,27 +58,18 @@ export class Main {
               ${this.lightFilter.render()}
             </fieldset>
             <fieldset class="products__filters-set">
-              <legend class="products__filter-heading">Price</legend>
-              <div class="products__price-min-max">
-                <span>$ 27</span><span>$ 168</span>
-              </div>
-              <div class="products__range">
-                <input type="range" min="27" max="168" value="27" id="price-min">
-                <input type="range" min="27" max="168" value="168" id="price-max">
-              </div>
+              ${this.priceFilter.render()}
             </fieldset>
             <fieldset class="products__filters-set">
-              <legend class="products__filter-heading">Stock</legend>
-              <div class="products__stock-min-max">
-                <span>1</span><span>38</span>
-              </div>
-              <div class="products__range">
-                <input type="range" min="1" max="38" value="1" id="price-min">
-                <input type="range" min="1" max="38" value="38" id="price-max">
-              </div>
+              ${this.stockFilter.render()}
             </fieldset>
           </form>
           <div class="products__container"></div>
         </div>`;
+  }
+
+  setListeners(): void {
+    this.priceFilter.listener();
+    this.stockFilter.listener();
   }
 }

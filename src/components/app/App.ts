@@ -18,6 +18,7 @@ export class App {
     this.router
       .add(/main/, () => {
         el.innerHTML = this.view.main.render();
+        this.view.main.setListeners();
       })
       .add(/cart/, () => {
         el.textContent = 'You are in cart';
