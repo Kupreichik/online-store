@@ -39,8 +39,8 @@ export class Main {
         <div class="products__bottom">
           <form class="products__filters">
             <div class="products__btns-wrapper">
-              <button class="products__filter-btn btn">Reset Filters</button>
-              <button class="products__filter-btn btn">Copy Link</button>
+              <button type="button" class="products__filter-btn btn" id="reset-btn">Reset Filters</button>
+              <button type="button" class="products__filter-btn btn" id="copy-link-btn">Copy Link</button>
             </div>
             <fieldset class="products__filters-set">
               ${this.categoryFilter.render()}
@@ -62,5 +62,10 @@ export class Main {
   setListeners(): void {
     this.priceFilter.listener();
     this.stockFilter.listener();
+    const copyBtn = document.querySelector('#copy-link-btn') as HTMLButtonElement;
+    copyBtn.onclick = () => {
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => (copyBtn.textContent = 'Copy Link'), 700);
+    };
   }
 }
