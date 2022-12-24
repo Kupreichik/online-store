@@ -5,6 +5,7 @@ import { PriceFilter } from '../filters/PriceFilter';
 import { SearchFilter } from '../filters/SearchFilter';
 import { SortForm } from '../filters/SortForm';
 import { StockFilter } from '../filters/StockFilter';
+import { mainCards } from './mainCards';
 
 export class Main {
   categoryFilter: CategoryFilter = new CategoryFilter(DEFAULT_STATE.filters.category);
@@ -13,6 +14,7 @@ export class Main {
   stockFilter: StockFilter = new StockFilter();
   search: SearchFilter = new SearchFilter();
   sortForm: SortForm = new SortForm();
+  cards: mainCards = new mainCards();
 
   render(): string {
     return `
@@ -34,7 +36,7 @@ export class Main {
           </div>
         </div>
         <div class="products__found">
-          Found: <span>${DEFAULT_STATE.products.length}</span>
+          Found: <span>${this.cards.products.length}</span>
         </div>
         <div class="products__bottom">
           <form class="products__filters">
@@ -55,7 +57,8 @@ export class Main {
               ${this.stockFilter.render()}
             </fieldset>
           </form>
-          <div class="products__container"></div>
+          ${this.cards.products.length === 0 ? '<p class="products__no-res">No Results</p>' : ''}
+          <div class="products__container tile">${this.cards.render()}</div>
         </div>`;
   }
 
