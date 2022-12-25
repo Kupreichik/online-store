@@ -1,27 +1,28 @@
 import { Product } from '../../../types/interfaces';
 import { DEFAULT_STATE } from '../../state/State';
+import { SortKind } from '../../../types/types';
 
 export class mainCards {
   products: Product[] = DEFAULT_STATE.products;
-  sortIndex: number = DEFAULT_STATE.sortIndex;
+  sortKind: number = DEFAULT_STATE.sortIndex;
 
   getState(): void {
     this.products = DEFAULT_STATE.products;
-    this.sortIndex = DEFAULT_STATE.sortIndex;
-    switch (this.sortIndex) {
-      case 0:
+    this.sortKind = DEFAULT_STATE.sortIndex;
+    switch (this.sortKind) {
+      case SortKind['Most Popular']:
         this.products.sort((a, b) => a.id - b.id);
         break;
-      case 1:
+      case SortKind['Alphabet A - Z']:
         this.products.sort((a, b) => (a.title > b.title ? 1 : -1));
         break;
-      case 2:
+      case SortKind['Alphabet Z - A']:
         this.products.sort((a, b) => (a.title > b.title ? -1 : 1));
         break;
-      case 3:
+      case SortKind['$ Low to High']:
         this.products.sort((a, b) => a.price - b.price);
         break;
-      case 4:
+      case SortKind['$ High to Low']:
         this.products.sort((a, b) => b.price - a.price);
         break;
     }

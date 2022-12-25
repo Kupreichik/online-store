@@ -1,17 +1,17 @@
 import { DEFAULT_STATE } from '../../state/State';
 import { CategoryFilter } from '../filters/CategoryFiter';
 import { LightFilter } from '../filters/LightFilter';
-import { PriceFilter } from '../filters/PriceFilter';
+import { PriceFilter, priceFilterData } from '../filters/PriceFilter';
 import { SearchFilter } from '../filters/SearchFilter';
 import { SortForm } from '../filters/SortForm';
-import { StockFilter } from '../filters/StockFilter';
+import { StockFilter, stockFilterData } from '../filters/StockFilter';
 import { mainCards } from './mainCards';
 
 export class Main {
   categoryFilter: CategoryFilter = new CategoryFilter(DEFAULT_STATE.filters.category);
   lightFilter: LightFilter = new LightFilter(DEFAULT_STATE.filters.light);
-  priceFilter: PriceFilter = new PriceFilter();
-  stockFilter: StockFilter = new StockFilter();
+  priceFilter: PriceFilter = new PriceFilter(priceFilterData);
+  stockFilter: StockFilter = new StockFilter(stockFilterData);
   search: SearchFilter = new SearchFilter();
   sortForm: SortForm = new SortForm();
   cards: mainCards = new mainCards();
@@ -66,9 +66,10 @@ export class Main {
     this.priceFilter.listener();
     this.stockFilter.listener();
     const copyBtn = document.querySelector('#copy-link-btn') as HTMLButtonElement;
+    const milliseconds = 700;
     copyBtn.onclick = () => {
       copyBtn.textContent = 'Copied!';
-      setTimeout(() => (copyBtn.textContent = 'Copy Link'), 700);
+      setTimeout(() => (copyBtn.textContent = 'Copy Link'), milliseconds);
     };
   }
 }

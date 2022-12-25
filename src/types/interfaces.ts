@@ -44,3 +44,13 @@ export interface Range {
   min: number;
   max: number;
 }
+
+export interface DualSlider {
+  range: Range;
+  minTextId: string;
+  maxTextId: string;
+  minInputId: string;
+  maxInputId: string;
+  correctionNumber: number;
+  additionalSymbol?: string;
+}

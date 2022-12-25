@@ -1,3 +1,4 @@
+import { SortKind } from '../../../types/types';
 import { DEFAULT_STATE } from '../../state/State';
 
 export class SortForm {
@@ -7,6 +8,18 @@ export class SortForm {
     this.sort = DEFAULT_STATE.sortIndex;
   }
 
+  private createOption(optsCount: number): string {
+    let string = '';
+    for (let i = 0; i < optsCount; i += 1) {
+      string += `
+      <option class="products__sort-option" value="${SortKind[i]}" ${
+        SortKind[this.sort] === SortKind[i] ? 'selected' : ''
+      }>${SortKind[i]}</option>
+      `;
+    }
+    return string;
+  }
+
   render(): string {
     this.getState();
     return `
@@ -14,11 +27,7 @@ export class SortForm {
         <fieldset class="products__sort-fieldset">
           <legend>Sort By: </legend>
           <select name="sort" class="products__sort-select">
-            <option class="products__sort-option" value="0" ${this.sort === 0 ? 'selected' : ''}>Most Popular</option>
-            <option class="products__sort-option" value="1" ${this.sort === 1 ? 'selected' : ''}>Alphabet A - Z</option>
-            <option class="products__sort-option" value="2" ${this.sort === 2 ? 'selected' : ''}>Alphabet Z - A</option>
-            <option class="products__sort-option" value="3" ${this.sort === 3 ? 'selected' : ''}>$ Low to High</option>
-            <option class="products__sort-option" value="4" ${this.sort === 4 ? 'selected' : ''}>$ High to Low</option>
+          ${this.createOption(5)}
           </select>
         </fieldset>
       </form>

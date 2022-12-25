@@ -1,9 +1,10 @@
 import { productsData } from '../../data/products';
 import { AppState } from '../../types/interfaces';
+import { SortKind } from '../../types/types';
 
 export const DEFAULT_STATE: AppState = {
   cartProducts: [],
-  sortIndex: 0,
+  sortIndex: SortKind['Most Popular'],
   sortView: 'tile',
   filters: {
     search: '',
