@@ -56,8 +56,8 @@
 .header__cart-btn {
   height: 24px;
   width: 24px;
-  -webkit-mask-image: url(../assets/img/cart.svg);
-  mask-image: url(../assets/img/cart.svg);
+  -webkit-mask-image: url(../assets/img/icons/cart.svg);
+  mask-image: url(../assets/img/icons/cart.svg);
   background-color: $black;
   border: none;
   cursor: pointer;
@@ -71,5 +71,12 @@
 @media screen and (max-width: 575px) {
   .header__logo-title {
     font-size: 30px;
+  }
+
+  .header {
+    position: fixed;
+    width: 100%;
+    background-color: white;
+    z-index: 1;
   }
 }
