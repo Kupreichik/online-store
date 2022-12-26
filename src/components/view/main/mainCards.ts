@@ -1,5 +1,5 @@
 import { Product } from '../../../types/interfaces';
-import { DEFAULT_STATE } from '../../state/State';
+import { ACTUAL_STATE, DEFAULT_STATE } from '../../state/State';
 import { SortKind } from '../../../types/types';
 
 export class mainCards {
@@ -7,8 +7,8 @@ export class mainCards {
   sortKind: number = DEFAULT_STATE.sortIndex;
 
   getState(): void {
-    this.products = DEFAULT_STATE.products;
-    this.sortKind = DEFAULT_STATE.sortIndex;
+    this.products = ACTUAL_STATE.products;
+    this.sortKind = ACTUAL_STATE.sortIndex;
     switch (this.sortKind) {
       case SortKind['Most Popular']:
         this.products.sort((a, b) => a.id - b.id);

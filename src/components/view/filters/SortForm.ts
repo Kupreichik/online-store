@@ -1,11 +1,12 @@
+import { app } from '../../../index';
 import { SortKind } from '../../../types/types';
-import { DEFAULT_STATE } from '../../state/State';
+import { ACTUAL_STATE, DEFAULT_STATE } from '../../state/State';
 
 export class SortForm {
   sort: number = DEFAULT_STATE.sortIndex;
 
   private getState(): void {
-    this.sort = DEFAULT_STATE.sortIndex;
+    this.sort = ACTUAL_STATE.sortIndex;
   }
 
   private createOption(optsCount: number): string {
@@ -32,5 +33,12 @@ export class SortForm {
         </fieldset>
       </form>
     `;
+  }
+
+  listener(): void {
+    const selectEl = document.querySelector('.products__sort-select') as HTMLSelectElement;
+    selectEl.onchange = () => {
+      app.controller.setActualState('sort', `${selectEl.selectedIndex}`);
+    };
   }
 }

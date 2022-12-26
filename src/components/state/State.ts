@@ -21,3 +21,23 @@ export const DEFAULT_STATE: AppState = {
   },
   products: productsData,
 };
+
+export const ACTUAL_STATE: AppState = {
+  cartProducts: [],
+  sortIndex: SortKind['Most Popular'],
+  sortView: 'tile',
+  filters: {
+    search: '',
+    category: [],
+    light: [],
+    price: {
+      min: 27,
+      max: 168,
+    },
+    stock: {
+      min: 1,
+      max: 38,
+    },
+  },
+  products: productsData,
+};
