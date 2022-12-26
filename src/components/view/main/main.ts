@@ -59,7 +59,7 @@ export class Main {
             </fieldset>
           </form>
           ${ACTUAL_STATE.products.length === 0 ? '<p class="products__no-res">No Results</p>' : ''}
-          <div class="products__container tile">${this.cards.render()}</div>
+          <div class="products__container ${ACTUAL_STATE.sortView}">${this.cards.render()}</div>
         </div>`;
   }
 
@@ -71,15 +71,26 @@ export class Main {
     this.lightFilter.listener();
     this.lightFilter.listener();
     this.sortForm.listener();
+
     const copyBtn = document.querySelector('#copy-link-btn') as HTMLButtonElement;
     const milliseconds = 700;
     copyBtn.onclick = () => {
       copyBtn.textContent = 'Copied!';
       setTimeout(() => (copyBtn.textContent = 'Copy Link'), milliseconds);
     };
+
     const resBtn = document.querySelector('#reset-btn') as HTMLButtonElement;
     resBtn.onclick = () => {
       app.controller.setActualState('reset', '');
+    };
+
+    const tileBtn = document.querySelector('.products__sort-tile') as HTMLElement;
+    tileBtn.onclick = () => {
+      app.controller.setActualState('sortView', 'tile');
+    };
+    const listBtn = document.querySelector('.products__sort-list') as HTMLElement;
+    listBtn.onclick = () => {
+      app.controller.setActualState('sortView', 'list');
     };
   }
 }

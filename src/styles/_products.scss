@@ -290,15 +290,12 @@ input[type=range]::-webkit-slider-thumb::before {
   background: none;
 }
 
-.products__container {
-  margin-left: 2rem;
-}
-
 .tile {
   display: grid;
   grid-template-columns: repeat(4,minmax(0,1fr));
   column-gap: 1rem;
   row-gap: 1.5rem;
+  margin-left: 2rem;
 }
 
 .main-card {
@@ -328,6 +325,8 @@ input[type=range]::-webkit-slider-thumb::before {
   cursor: pointer;
   background-color: $green;
   color: white;
+  height: 2.2rem;
+  width: 124px;
 }
 
 .main-card_price {
@@ -361,6 +360,36 @@ input[type=range]::-webkit-slider-thumb::before {
   color: $green;
 }
 
+.list {
+  margin-left: 2rem;
+  width: 100%;
+}
+
+.list .main-card_img {
+  height: 100px;
+  width: auto;
+}
+
+.list .main-card_link {
+  display: flex;
+}
+
+.list .main-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.list .main-card_btn {
+  margin-left: 30px;
+}
+
+.list .main-card_bottom {
+  padding-bottom: 0;
+}
+
 @media (max-width: 1320px) {
   .tile {
     grid-template-columns: repeat(3,minmax(0,1fr));
@@ -373,6 +402,17 @@ input[type=range]::-webkit-slider-thumb::before {
   }
 }
 
+@media (max-width: 914px) {
+  .list .main-card_bottom {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .list .main-card_btn {
+    margin-left: 15px;
+  }
+}
+
 @media (max-width: 780px) {
   .products__bottom {
     flex-direction: column;
@@ -381,6 +421,15 @@ input[type=range]::-webkit-slider-thumb::before {
   .tile {
     grid-template-columns: repeat(3,minmax(0,1fr));
     margin-left: 0;
+  }
+
+  .list {
+    margin-left: 0;
+  }
+
+  .list .main-card_bottom {
+    flex-direction: row;
+    flex-shrink: 0;
   }
 
   .products__filters {
@@ -447,6 +496,15 @@ input[type=range]::-webkit-slider-thumb::before {
   .products__top {
     flex-direction: column;
   }
+
+  .list .main-card_bottom {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .list .main-card_btn {
+    margin-left: 15px;
+  }
 }
 
 @media (max-width: 524px) {
@@ -465,5 +523,23 @@ input[type=range]::-webkit-slider-thumb::before {
   .tile > .main-card {
     width: 90%;
     margin: 0 auto;
+  }
+}
+
+@media (max-width: 460px) {
+  .list .main-card {
+    flex-direction: column;
+  }
+
+  .list .main-card_bottom {
+    flex-direction: row;
+  }
+
+  .list .main-card_link {
+    align-self: flex-start
+  }
+
+  .list .main-card_bottom {
+    align-self: flex-end;
   }
 }

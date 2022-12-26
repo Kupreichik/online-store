@@ -49,6 +49,10 @@ export class Controller {
         ACTUAL_STATE.filters.search = value;
         break;
 
+      case 'sortView':
+        ACTUAL_STATE.sortView = value as 'tile' | 'list';
+        break;
+
       case 'reset':
         this.resetFilters();
         break;
