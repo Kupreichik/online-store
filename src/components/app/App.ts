@@ -21,7 +21,8 @@ export class App {
         this.view.main.setListeners();
       })
       .add(/cart/, () => {
-        el.textContent = 'You are in cart';
+        el.innerHTML = this.view.cart.render();
+        // this.view.cart.setListeners();
       })
       .add(/id\/([0-9]*)/, (id: string) => {
         el.textContent = `${id} - product id`;

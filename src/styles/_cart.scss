@@ -1,0 +1,147 @@
+.cart__inner {
+  display: flex;
+  gap: 20px;
+}
+
+.cart__products {
+  width: 70%;
+}
+
+.cart__products-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid $black;
+  padding: 5px;
+  font-size: 1.2rem;
+  color: $green;
+  margin-bottom: 10px;
+}
+
+.cart__products-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.cart__products-input {
+  max-width: 40px;
+  text-align: center;
+  outline: none;
+  border: 1px solid $grey;
+  font-size: 1.2rem;
+}
+
+.cart__products-input:focus {
+  border: 1px solid $black;
+}
+
+.cart__products-btn {
+  width: 30px;
+  padding: 0.2em 0.4em;
+  font-weight: 700;
+  transition: all 0.3s ease-in-out;
+  background: white;
+  cursor: pointer;
+  border: 1px solid $grey;
+}
+
+.cart__products-btn:hover {
+  color: white;
+  background: $green;
+}
+
+.cart__products-number {
+  color: $black;
+  font-size: 1.2rem;
+}
+
+.cart__items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.cart__item {
+  display: grid;
+  grid-template-columns: 10px 80px 3fr 1fr 1fr;
+  grid-row-gap: 10px;
+  align-items: center;
+  grid-column-gap: 20px;
+  border-bottom: 1px solid $black;
+  padding-bottom: 10px;
+}
+
+.cart__item-img {
+  height: 100px;
+}
+
+.cart__item-text {
+  white-space: nowrap;
+}
+
+.cart__item-accent {
+  font-size: 0.8rem;
+  color: $grey;
+  margin-top: 5px;
+}
+
+.cart__item-price {
+  justify-self: center;
+}
+
+.cart__add {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-self: end;
+}
+
+.cart-btn {
+  font-weight: 700;
+  transition: all 0.3s ease-in-out;
+  background: white;
+  cursor: pointer;
+  border: 1px solid $grey;
+}
+
+.cart__total {
+  width: 30%;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  background: lightgrey;
+  padding: 20px;
+}
+
+.cart__total-title {
+  font-size: 1.2rem;
+  color: $darkGreen;
+}
+
+.cart__total-spec {
+  text-align: center;
+}
+
+.cart__promo {
+  text-align: center;
+}
+
+.cart__promo-hint {
+  font-size: 0.8rem;
+}
+
+.cart__promo-input::-webkit-input-placeholder {
+  text-align: center;
+  max-width: 190px;
+}
+
+.cart__total-btn {
+  color: white;
+  background: $green;
+  cursor: pointer;
+}

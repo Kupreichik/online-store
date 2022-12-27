@@ -25,7 +25,7 @@ export interface ComponentConfig {
 }
 
 export interface AppState {
-  cartProducts: number[];
+  cartProducts: cartState[];
   sortIndex: number;
   sortView: 'tile' | 'list';
   filters: Filters;
@@ -53,4 +53,9 @@ export interface DualSlider {
   maxInputId: string;
   correctionNumber: number;
   additionalSymbol?: string;
+}
+
+export interface cartState {
+  id: number;
+  count: number;
 }
