@@ -107,6 +107,11 @@
   border: 1px solid $grey;
 }
 
+.cart-btn:hover {
+  color: white;
+  background: $green;
+}
+
 .cart__total {
   width: 30%;
   height: fit-content;

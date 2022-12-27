@@ -1,14 +1,12 @@
 import { productsData } from '../../../data/products';
-import { Product } from '../../../types/interfaces';
+import { Product, CartState } from '../../../types/interfaces';
 import { DEFAULT_STATE } from '../../state/State';
 
 class Cart {
-  sumPrice = 0;
-
   render() {
     let htmlInner = '';
     let html = '';
-    let amountProducts = 0;
+    let sumPrice = 0;
     DEFAULT_STATE.cartProducts.forEach((elCart, i) => {
       const product = productsData.find((elAllProducts) => elAllProducts.id === elCart.id) as Product;
       htmlInner += `
@@ -21,19 +19,17 @@ class Cart {
             </div>
             <p class="cart__item-text cart__item-price">${product.price} $</p>
             <div class="cart__add">
-              <button class="cart-btn minus">
+              <button class="cart-btn minus" data-id="${product.id}">
                 -
               </button>
               <p class="cart__item-text">${elCart.count}</p>
-              <button class="cart-btn plus">
+              <button class="cart-btn plus" data-id="${product.id}">
                 +
               </button>
             </div>
           </div>
         `;
-
-      this.sumPrice += product.price;
-      amountProducts += 1;
+      sumPrice = sumPrice + product.price * elCart.count;
     });
 
     html = `
@@ -62,8 +58,8 @@ class Cart {
             <div class="cart__total">
               <h2 class="cart__total-title">Summary</h2>
               <div class="cart__total-spec">
-                <div class="cart__total-products"><span>Products:</span> ${amountProducts}</div>
-                <div class="cart__total-price"><span>Total:</span> ${this.sumPrice} $</div>
+                <div class="cart__total-products"><span>Products:</span> ${DEFAULT_STATE.cartProducts.length}</div>
+                <div class="cart__total-price"><span>Total:</span> ${sumPrice} $</div>
               </div>
               <div class="cart__promo">
                 <div class="cart__promo-code">
@@ -77,29 +73,54 @@ class Cart {
         </div>
       </div>
         `;
+    this.header(sumPrice, DEFAULT_STATE.cartProducts.length);
     return html;
   }
 
   setListeners() {
-    (document.querySelector('.cart') as HTMLElement).onclick = (event) => {
+    (document.querySelector('.cart__items') as HTMLElement).onclick = (event) => {
       const target = event.target as HTMLElement;
       if (target.classList.contains('plus')) {
-        console.log('+');
-        // this.plus(target.dataset.id);
+        this.plus(target.dataset.id);
       } else if (target.classList.contains('minus')) {
-        console.log('-');
-        // this.minus(target.dataset.id);
+        this.minus(target.dataset.id);
       }
     };
   }
 
-  // plus(el) {
-  //   console.log('+');
-  // }
+  plus(id: string | undefined): void {
+    const main = document.querySelector('.main') as HTMLElement;
+    DEFAULT_STATE.cartProducts.forEach((el) => {
+      if (el.id === Number(id)) {
+        el.count += 1;
+        main.innerHTML = this.render();
+        this.setListeners();
+      }
+    });
+  }
 
-  // minus(el) {
-  //   console.log('-');
-  // }
+  minus(id: string | undefined): void {
+    const main = document.querySelector('.main') as HTMLElement;
+    const arr: CartState[] | never = [];
+    DEFAULT_STATE.cartProducts.forEach((el) => {
+      arr.push(el);
+      if (el.id === Number(id)) {
+        if (el.count === 1) {
+          arr.pop();
+        } else {
+          el.count -= 1;
+        }
+      }
+      DEFAULT_STATE.cartProducts = arr;
+      main.innerHTML = this.render();
+      this.setListeners();
+    });
+  }
+
+  header(sumPrice: number, allProductCount: number) {
+    (document.querySelector('.header__total-price') as HTMLElement).innerHTML = `${sumPrice} $`;
+    (document.querySelector('.header__cart-count') as HTMLElement).innerHTML = `(${allProductCount})`;
+  }
 }
 
 export default Cart;
