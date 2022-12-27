@@ -17,6 +17,10 @@ export class App {
   }
 
   start(): void {
+    window.onload = () => {
+      this.controller.syncState();
+      this.router.resolveRoute();
+    };
     const el = document.querySelector('.main') as HTMLElement;
     this.router
       .add(/^$/, () => {

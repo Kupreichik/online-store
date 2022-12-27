@@ -61,13 +61,10 @@ class Router {
   };
 
   listen = (): void => {
-    window.addEventListener('load', this.resolveRoute);
     window.addEventListener('hashchange', this.resolveRoute);
   };
 
   resolveRoute = (): void => {
-    //if (!this.current) this.navigate(this.root);
-    //if (this.current === this.getFragment()) return;
     this.current = this.getFragment();
     this.routes.some((route) => {
       const match: RegExpMatchArray | null = (this.current as string).match(route.path);

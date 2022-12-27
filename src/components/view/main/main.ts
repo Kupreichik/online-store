@@ -73,15 +73,13 @@ export class Main {
     this.sortForm.listener();
 
     const copyBtn = document.querySelector('#copy-link-btn') as HTMLButtonElement;
-    const milliseconds = 700;
-    copyBtn.onclick = () => {
-      copyBtn.textContent = 'Copied!';
-      setTimeout(() => (copyBtn.textContent = 'Copy Link'), milliseconds);
+    copyBtn.onclick = (e) => {
+      app.controller.copyToClipboard(e);
     };
 
     const resBtn = document.querySelector('#reset-btn') as HTMLButtonElement;
     resBtn.onclick = () => {
-      app.controller.setActualState('reset', '');
+      app.controller.resetFilters();
     };
 
     const tileBtn = document.querySelector('.products__sort-tile') as HTMLElement;

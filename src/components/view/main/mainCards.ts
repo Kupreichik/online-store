@@ -35,7 +35,7 @@ export class mainCards {
       const prod: Product = this.products[i];
       cardsLayout += `
       <div class="main-card">
-        <a href="/#/id/${prod.id}/" class="main-card_link">
+        <a href="${window.location.search}#/id/${prod.id}/" class="main-card_link">
           <img src="${prod.images[0]}" alt="${prod.title}" class="main-card_img">
           <div>
             <h4 class="main-card_title">${prod.title}</h4>
