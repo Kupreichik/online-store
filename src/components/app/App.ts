@@ -22,7 +22,7 @@ export class App {
       })
       .add(/cart/, () => {
         el.innerHTML = this.view.cart.render();
-        // this.view.cart.setListeners();
+        this.view.cart.setListeners();
       })
       .add(/id\/([0-9]*)/, (id: string) => {
         el.textContent = `${id} - product id`;

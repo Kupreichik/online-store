@@ -3,15 +3,20 @@ import { Product, CartState } from '../../../types/interfaces';
 import { DEFAULT_STATE } from '../../state/State';
 
 class Cart {
-  render() {
+  //рендер страницы
+  render(products: CartState[] = DEFAULT_STATE.cartProducts.slice(0, 3)): string {
     let htmlInner = '';
     let html = '';
     let sumPrice = 0;
-    DEFAULT_STATE.cartProducts.forEach((elCart, i) => {
+    sumPrice += DEFAULT_STATE.cartProducts.reduce((acc, el) => {
+      return (acc += el.price * el.count);
+    }, sumPrice);
+
+    products.forEach((elCart, i) => {
       const product = productsData.find((elAllProducts) => elAllProducts.id === elCart.id) as Product;
       htmlInner += `
           <div class="cart__item">
-            <p class="cart__item-text">${i + 1}</p>
+            <p class="cart__item-text">${(DEFAULT_STATE.cartPage - 1) * 3 + (i + 1)}</p>
             <img class="cart__item-img"src="${product.images[0]}" alt="flower">
             <div class="cart__item-center>
               <p class="cart__item-text">${product.title}</p>
@@ -29,7 +34,6 @@ class Cart {
             </div>
           </div>
         `;
-      sumPrice = sumPrice + product.price * elCart.count;
     });
 
     html = `
@@ -41,13 +45,13 @@ class Cart {
               <div class="cart__products-controls">
                 <div class="cart__products-limit">
                   Items:
-                  <input class="cart__products-input" type="text" value="3"/>
+                  <input class="cart__products-input" type="text" value="${DEFAULT_STATE.cartItems}"/>
                 </div>
                 <div class="cart__products-pages">
                   Page:
-                  <button class="cart__products-btn">&lt;</button>
-                  <span class="cart__products-number">1</span>
-                  <button class="cart__products-btn">&gt;</button>
+                  <button class="cart__products-btn prev">&lt;</button>
+                  <span class="cart__products-number">${DEFAULT_STATE.cartPage}</span>
+                  <button class="cart__products-btn next">&gt;</button>
                 </div>
               </div>
             </div>
@@ -73,11 +77,12 @@ class Cart {
         </div>
       </div>
         `;
-    this.header(sumPrice, DEFAULT_STATE.cartProducts.length);
+    this.changeHeader(sumPrice, products.length);
     return html;
   }
 
-  setListeners() {
+  //добавление слушателей на кнопки и изменение инпута
+  setListeners(): void {
     (document.querySelector('.cart__items') as HTMLElement).onclick = (event) => {
       const target = event.target as HTMLElement;
       if (target.classList.contains('plus')) {
@@ -86,8 +91,27 @@ class Cart {
         this.minus(target.dataset.id);
       }
     };
+    (document.querySelector('.cart__products-input') as HTMLInputElement).onchange = (event) => {
+      const target = event.target as HTMLInputElement;
+      this.pagination(+target.value, DEFAULT_STATE.cartPage);
+    };
+    (document.querySelector('.prev') as HTMLElement).onclick = () => {
+      if (DEFAULT_STATE.cartPage !== 1) {
+        DEFAULT_STATE.cartPage -= 1;
+        this.pagination(DEFAULT_STATE.cartItems, DEFAULT_STATE.cartPage);
+        this.setListeners();
+      }
+    };
+    (document.querySelector('.next') as HTMLElement).onclick = () => {
+      if (DEFAULT_STATE.cartPage < DEFAULT_STATE.cartProducts.length / DEFAULT_STATE.cartItems) {
+        DEFAULT_STATE.cartPage += 1;
+        this.pagination(DEFAULT_STATE.cartItems, DEFAULT_STATE.cartPage);
+        this.setListeners();
+      }
+    };
   }
 
+  //плюс количество одного товара
   plus(id: string | undefined): void {
     const main = document.querySelector('.main') as HTMLElement;
     DEFAULT_STATE.cartProducts.forEach((el) => {
@@ -99,6 +123,7 @@ class Cart {
     });
   }
 
+  //минус количество одного товара
   minus(id: string | undefined): void {
     const main = document.querySelector('.main') as HTMLElement;
     const arr: CartState[] | never = [];
@@ -117,9 +142,32 @@ class Cart {
     });
   }
 
-  header(sumPrice: number, allProductCount: number) {
+  //изменение в шапке количество в корзине и тотал
+  changeHeader(sumPrice: number, allProductCount: number): void {
     (document.querySelector('.header__total-price') as HTMLElement).innerHTML = `${sumPrice} $`;
     (document.querySelector('.header__cart-count') as HTMLElement).innerHTML = `(${allProductCount})`;
+  }
+
+  //разбитие на страницы в зависимости от инпута и номера страницы.
+  pagination(value: number, page: number) {
+    DEFAULT_STATE.cartItems = +value;
+    const cartItems = DEFAULT_STATE.cartItems;
+    const arr = DEFAULT_STATE.cartProducts;
+    const size = Number(value);
+    const pages = Math.ceil(arr.length / size);
+
+    if (pages < page) return;
+
+    const startEl = (page - 1) * cartItems;
+    const endEl = startEl + cartItems;
+
+    console.log(startEl, 'startEl');
+    console.log(endEl, 'endEl');
+    console.log(arr.slice(startEl, endEl), 'arr.slice(startEl, endEl)');
+
+    const main = document.querySelector('.main') as HTMLElement;
+    main.innerHTML = this.render(arr.slice(startEl, endEl));
+    this.setListeners();
   }
 }
 
