@@ -300,17 +300,17 @@ export const productsData: Product[] = [
   },
   {
     id: 21,
-    title: 'Ficus Audrey Large',
+    title: 'Dracaena Warneckii Cane Large',
     description:
-      'The Ficus Audrey has matte green leaves and thick, white stems. It thrives in filtered bright light with waterings every 1–2 weeks. Audrey’s easy-going nature and low-maintenance care routine make it a popular variety of ficus to grow as a houseplant. Sized to ship best, our large Ficus Audrey arrives with room to grow as it adapts to your home’s conditions.',
-    price: 132,
+      'A member of the popular, low-maintenance Dracaena plant family, the Dracaena Warneckii (sometimes called a corn plant) has a tall and slender silhouette that is great in corners, behind couches, or anywhere you want to add height without bulk. Sized to ship best, our large Dracaena arrives with room to grow as it adapts to your home’s conditions.',
+    price: 144,
     stock: 5,
     category: ['large'],
     light: 'bright',
     images: [
-      'https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_ficus-audrey_large_burbank_almond.jpg?v=1669614571&width=400',
-      'https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_ficus-audrey_gallery_all_01.jpg',
-      'https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_ficus-audrey_monstera_begonia-jurassic-dino_gallery_all_all_01.jpg',
+      'https://cdn.shopify.com/s/files/1/0150/6262/products/The-Sill_Dracaena-Warneckii_Large_Burbank_White_Variant.jpg?v=1672212312&width=400',
+      'https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_dracaena_large_gallery_all_01.jpg?v=1672212312',
+      'https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_dracaena-warneckii_gallery_01.jpg?v=1672212312',
     ],
   },
   {
@@ -323,7 +323,7 @@ export const productsData: Product[] = [
     category: ['tabletop', 'easy-care'],
     light: 'bright',
     images: [
-      'https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_begonia-jurassic-silver-point_medium_hyde_mint.jpg?v=1669753112&width=400',
+      'https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_begonia-jurassic-silver-point_medium_hyde_mint_03c9bf1a-ed3d-4f8f-b25b-ab9038c8678a.jpg?v=1672183080&width=400',
       'https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_begonia-jurassic-silver-point_medium_gallery_01.jpg',
     ],
   },
