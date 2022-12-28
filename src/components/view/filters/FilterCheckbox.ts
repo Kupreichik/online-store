@@ -1,5 +1,5 @@
 import { Product } from '../../../types/interfaces';
-import { ACTUAL_STATE, DEFAULT_STATE } from '../../state/State';
+import { STATE, DEFAULT_STATE } from '../../state/State';
 
 export abstract class FilterCheckbox {
   filters: string[];
@@ -12,7 +12,7 @@ export abstract class FilterCheckbox {
 
   protected getFilterState(statFilters: string[]): void {
     this.filters = statFilters;
-    this.products = ACTUAL_STATE.products;
+    this.products = STATE.products;
   }
 
   protected isChecked(value: string): boolean {

@@ -1,5 +1,5 @@
 import { app } from '../../../index';
-import { ACTUAL_STATE } from '../../state/State';
+import { STATE } from '../../state/State';
 import { FilterCheckbox } from './FilterCheckbox';
 
 const lightFilterData: [string, string, string, number][] = [
@@ -14,7 +14,7 @@ export class LightFilter extends FilterCheckbox {
   }
 
   render(): string {
-    this.getFilterState(ACTUAL_STATE.filters.light);
+    this.getFilterState(STATE.filters.light);
     return `
       <legend class="products__filter-heading">Light</legend>
       ${lightFilterData.reduce((acc, data) => acc + this.createCategory(...data), '')}

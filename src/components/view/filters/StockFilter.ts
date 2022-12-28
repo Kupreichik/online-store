@@ -1,5 +1,5 @@
 import { DualSlider } from '../../../types/interfaces';
-import { ACTUAL_STATE, DEFAULT_STATE } from '../../state/State';
+import { STATE, DEFAULT_STATE } from '../../state/State';
 import { FilterDualSlider } from './FilterDualSlider';
 
 export const stockFilterData: DualSlider = {
@@ -17,7 +17,7 @@ export const stockFilterData: DualSlider = {
 
 export class StockFilter extends FilterDualSlider {
   private getState(): void {
-    this.products = ACTUAL_STATE.products.sort((a, b) => a.stock - b.stock);
+    this.products = STATE.products.sort((a, b) => a.stock - b.stock);
   }
 
   render(): string {

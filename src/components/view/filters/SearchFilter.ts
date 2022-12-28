@@ -1,11 +1,11 @@
 import { app } from '../../../index';
-import { ACTUAL_STATE, DEFAULT_STATE } from '../../state/State';
+import { STATE, DEFAULT_STATE } from '../../state/State';
 
 export class SearchFilter {
   search: string = DEFAULT_STATE.filters.search;
 
   private getState(): void {
-    this.search = ACTUAL_STATE.filters.search;
+    this.search = STATE.filters.search;
   }
 
   render(): string {
