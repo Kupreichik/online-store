@@ -1,3 +1,4 @@
+import { app } from '../../../index';
 import { DualSlider, Product } from '../../../types/interfaces';
 import { DEFAULT_STATE } from '../../state/State';
 
@@ -7,20 +8,27 @@ export abstract class FilterDualSlider {
   constructor(protected sliderData: DualSlider) {}
 
   protected createSlider(currMin: number, currMax: number): string {
+    const { minInputId, maxInputId, minTextId, maxTextId, range, additionalSymbol } = this.sliderData;
     return `
-            ${currMin > 0 ? '<span id="' + this.sliderData.minTextId + '">$ ' + currMin.toString() + '</span>' : ''}
-        ${currMin === 0 ? '<span style="width: 100%; text-align: center;">Products Not Found</span>' : ''}
-        ${currMin > 0 ? '<span id="' + this.sliderData.maxTextId + '">$ ' + currMax.toString() + '</span>' : ''}
+        <div>
+          <span>${additionalSymbol}</span>
+          <span id="${minTextId}" 
+            ${currMin === 0 ? 'style="display: none;"' : ''}>${currMin}</span>
+        </div>
+          ${currMin === 0 ? '<span style="width: 100%; text-align: center;">Products Not Found</span>' : ''}
+        <div>
+          <span>${additionalSymbol}</span>
+          <span id="${maxTextId}" 
+            ${currMin === 0 ? 'style="display: none;"' : ''}>${currMax}</span>
+        </div>
       </div>
       <div class="products__range">
-        <input type="range" min="${this.sliderData.range.min}" max="${this.sliderData.range.max}" value="${
-      currMin > 0 ? currMin : this.sliderData.range.min
-    }"
+        <input type="range" min="${range.min}" max="${range.max}" value="${currMin > 0 ? currMin : range.min}"
         style="${this.createBackground(currMin, currMax)}"
-        id="${this.sliderData.minInputId}">
-        <input type="range" min="${this.sliderData.range.min}" max="${this.sliderData.range.max}" value="${
-      currMax > 0 ? currMax : this.sliderData.range.max
-    }" id="${this.sliderData.maxInputId}">
+        id="${minInputId}">
+        <input type="range" min="${range.min}" max="${range.max}" value="${
+      currMax > 0 ? currMax : range.min
+    }" id="${maxInputId}">
     `;
   }
 
@@ -28,21 +36,17 @@ export abstract class FilterDualSlider {
     return `
     background: linear-gradient(to right,
       rgb(129 127 124) 0%,
-      rgb(129 127 124) ${
-        ((currMin - this.sliderData.range.min) / (this.sliderData.range.max - this.sliderData.range.min)) * 100
-      }%,
-      rgb(0 171 132) ${
-        ((currMin - this.sliderData.range.min) / (this.sliderData.range.max - this.sliderData.range.min)) * 100
-      }%,
-      rgb(0 171 132) ${
-        ((currMax - this.sliderData.range.min) / (this.sliderData.range.max - this.sliderData.range.min)) * 100
-      }%,
-      rgb(129 127 124) ${
-        ((currMax - this.sliderData.range.min) / (this.sliderData.range.max - this.sliderData.range.min)) * 100
-      }%,
+      rgb(129 127 124) ${this.getPercentVal(currMin)}%,
+      rgb(0 171 132) ${this.getPercentVal(currMin)}%,
+      rgb(0 171 132) ${this.getPercentVal(currMax)}%,
+      rgb(129 127 124) ${this.getPercentVal(currMax)}%,
       rgb(129 127 124) 100%) no-repeat center;
       background-size: 100% 2px;
     `;
+  }
+
+  private getPercentVal(curr: number, min = this.sliderData.range.min, max = this.sliderData.range.max): number {
+    return ((curr - min) / (max - min)) * 100;
   }
 
   listener(): void {
@@ -50,11 +54,10 @@ export abstract class FilterDualSlider {
     const upperSlider = document.querySelector(`#${this.sliderData.maxInputId}`) as HTMLInputElement;
     let lowerVal: number = parseInt(lowerSlider.value);
     let upperVal: number = parseInt(upperSlider.value);
-    const labelMin: HTMLElement | null = document.querySelector(`#${this.sliderData.minTextId}`);
-    const labelMax: HTMLElement | null = document.querySelector(`#${this.sliderData.maxTextId}`);
+    const labelMin = document.querySelector(`#${this.sliderData.minTextId}`) as HTMLElement;
+    const labelMax = document.querySelector(`#${this.sliderData.maxTextId}`) as HTMLElement;
 
     const num: number = this.sliderData.correctionNumber;
-    const symbol: string = this.sliderData.additionalSymbol ? this.sliderData.additionalSymbol : '';
 
     upperSlider.oninput = () => {
       lowerVal = parseInt(lowerSlider.value);
@@ -62,18 +65,22 @@ export abstract class FilterDualSlider {
 
       if (upperVal < lowerVal + num) {
         lowerSlider.value = (upperVal - num).toString();
-        if (labelMin) labelMin.innerText = `${symbol}${+lowerSlider.value + num}`;
+        labelMin.innerText = `${+lowerSlider.value + num}`;
 
         if (lowerVal === +lowerSlider.min) {
           upperSlider.value = (lowerVal + num).toString();
-          if (labelMin) labelMin.innerText = `${symbol}${lowerSlider.value}`;
+          labelMin.innerText = lowerSlider.value;
         }
       } else {
-        if (labelMin) labelMin.innerText = `${symbol}${lowerSlider.value}`;
+        labelMin.innerText = lowerSlider.value;
       }
-      if (labelMax) labelMax.innerText = `${symbol}${upperVal}`;
+      labelMax.innerText = `${upperVal}`;
 
       lowerSlider.setAttribute('style', this.createBackground(+lowerSlider.value, upperVal));
+    };
+
+    upperSlider.onchange = () => {
+      this.setSliderState(labelMin, labelMax);
     };
 
     lowerSlider.oninput = () => {
@@ -82,17 +89,26 @@ export abstract class FilterDualSlider {
 
       if (lowerVal > upperVal - num) {
         upperSlider.value = (lowerVal + num).toString();
-        if (labelMax) labelMax.innerText = `${symbol}${+upperSlider.value - num}`;
+        labelMax.innerText = `${+upperSlider.value - num}`;
 
         if (upperVal === +upperSlider.max) {
           lowerSlider.value = `${parseInt(upperSlider.max) - num}`;
-          if (labelMax) labelMax.innerText = `${symbol}${upperSlider.value}`;
+          labelMax.innerText = upperSlider.value;
         }
       } else {
-        if (labelMax) labelMax.innerText = `${symbol}${upperSlider.value}`;
+        labelMax.innerText = upperSlider.value;
       }
-      if (labelMin) labelMin.innerText = `${symbol}${lowerVal}`;
+      labelMin.innerText = `${lowerVal}`;
       lowerSlider.setAttribute('style', this.createBackground(lowerVal, +upperSlider.value));
     };
+
+    lowerSlider.onchange = () => {
+      this.setSliderState(labelMin, labelMax);
+    };
+  }
+
+  setSliderState(labelMin: HTMLElement, labelMax: HTMLElement): void {
+    app.controller.setActualState(this.sliderData.maxInputId, labelMax.innerText);
+    app.controller.setActualState(this.sliderData.minInputId, labelMin.innerText);
   }
 }

@@ -4,7 +4,7 @@ import { SortKind } from '../../types/types';
 
 export const DEFAULT_STATE: AppState = {
   cartProducts: [],
-  sortIndex: SortKind['Most Popular'],
+  sortIndex: SortKind.popular,
   sortView: 'tile',
   filters: {
     search: '',
@@ -21,3 +21,5 @@ export const DEFAULT_STATE: AppState = {
   },
   products: productsData,
 };
+
+export const STATE: AppState = structuredClone(DEFAULT_STATE);

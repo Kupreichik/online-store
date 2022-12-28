@@ -1,4 +1,4 @@
-import { callbackType } from './types';
+import { callbackType, SortKind, SortView } from './types';
 
 export interface Route {
   path: RegExp;
@@ -26,8 +26,8 @@ export interface ComponentConfig {
 
 export interface AppState {
   cartProducts: number[];
-  sortIndex: number;
-  sortView: 'tile' | 'list';
+  sortIndex: SortKind;
+  sortView: SortView;
   filters: Filters;
   products: Product[];
 }
