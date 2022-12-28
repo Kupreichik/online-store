@@ -103,7 +103,10 @@ export class Controller {
         .split('&')
         .map((el) => el.split('='));
       state.map(([key, values]) => {
-        values.split('%2C').map((val) => this.setActualState(key, val, false));
+        values.split('%2C').map((val) => {
+          val = decodeURIComponent(val);
+          this.setActualState(key, val.replace(/\+/gi, ' '), false);
+        });
       });
       this.setLinkHref();
     }
