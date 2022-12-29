@@ -4,6 +4,8 @@ import { SortKind } from '../../types/types';
 
 export const DEFAULT_STATE: AppState = {
   cartProducts: [],
+  cartItems: 3,
+  cartPage: 1,
   sortIndex: SortKind.popular,
   sortView: 'tile',
   filters: {

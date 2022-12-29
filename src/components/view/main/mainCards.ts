@@ -1,6 +1,7 @@
 import { Product } from '../../../types/interfaces';
 import { STATE, DEFAULT_STATE } from '../../state/State';
 import { SortKind } from '../../../types/types';
+import { app } from '../../../index';
 
 export class mainCards {
   products: Product[] = DEFAULT_STATE.products;
@@ -44,12 +45,18 @@ export class mainCards {
         </a>
         <div class="main-card_bottom">
           <span class="main-card_price">$ ${prod.price}</span>
-          <button class="main-card_btn btn" value="${prod.id}">Add To Cart</button>
+          <button class="main-card_btn btn" value="${prod.id}">
+          ${STATE.cartProducts.find((item) => item.id === prod.id) ? 'Remove' : 'Add To Cart'}
+          </button>
         </div>
       </div>
     `;
     }
-
     return cardsLayout;
+  }
+
+  listener(): void {
+    const btns: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.main-card_btn');
+    btns.forEach((btn) => (btn.onclick = () => app.controller.setActualState('cart', btn.value)));
   }
 }

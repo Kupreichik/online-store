@@ -71,6 +71,7 @@ export class Main {
     this.lightFilter.listener();
     this.lightFilter.listener();
     this.sortForm.listener();
+    this.cards.listener();
 
     const copyBtn = document.querySelector('#copy-link-btn') as HTMLButtonElement;
     copyBtn.onclick = (e) => {

@@ -1,7 +1,7 @@
 /* eslint-disable no-case-declarations */
 import { productsData } from '../../data/products';
 import { app } from '../../index';
-import { Product } from '../../types/interfaces';
+import { CartState, Product } from '../../types/interfaces';
 import { SortKind, SortView } from '../../types/types';
 import { STATE, DEFAULT_STATE } from '../state/State';
 
@@ -49,6 +49,14 @@ export class Controller {
       case 'sortView':
         STATE.sortView = value as SortView;
         this.setSearchParams(key, value);
+        break;
+
+      case 'cart':
+        if (STATE.cartProducts.find((prod) => prod.id === +value)) {
+          this.removeProdFromCart(+value);
+        } else {
+          this.addProdToCart(+value);
+        }
         break;
     }
     STATE.products = this.productFilter();
@@ -133,5 +141,43 @@ export class Controller {
       arr.push(value);
     }
     this.setSearchParams(key, arr.toString());
+  }
+
+  addProdToCart(id: number): void {
+    const prod: CartState | undefined = STATE.cartProducts.find((prod) => prod.id === id);
+    const prodData = productsData.find((product) => product.id === id) as Product;
+    if (prod) {
+      if (prod.count < prodData.stock) prod.count += 1;
+    } else {
+      STATE.cartProducts.push({
+        id: id,
+        count: 1,
+        price: prodData.price,
+      });
+    }
+    this.setHeaderCart();
+  }
+
+  removeProdFromCart(id: number, isDrop = false): void {
+    const prod = STATE.cartProducts.find((prod) => prod.id === id) as CartState;
+    if (isDrop || prod.count === 1) {
+      STATE.cartProducts.splice(STATE.cartProducts.indexOf(prod), 1);
+    } else {
+      prod.count -= 1;
+    }
+    this.setHeaderCart();
+  }
+
+  getAmountCart(): number {
+    return STATE.cartProducts.reduce((curr, prod) => curr + prod.count, 0);
+  }
+
+  getSumPrice(): number {
+    return STATE.cartProducts.reduce((curr, prod) => curr + prod.count * prod.price, 0);
+  }
+
+  setHeaderCart(): void {
+    (document.querySelector('.header__total-price') as HTMLElement).innerText = `${this.getSumPrice()}.00 $`;
+    (document.querySelector('.header__cart-count') as HTMLElement).innerText = `(${this.getAmountCart()})`;
   }
 }
