@@ -1,4 +1,4 @@
-import { callbackType } from './types';
+import { callbackType, SortKind, SortView } from './types';
 
 export interface Route {
   path: RegExp;
@@ -26,12 +26,10 @@ export interface ComponentConfig {
 
 export interface AppState {
   cartProducts: CartState[];
-  sumPrice: number;
-  amountProductsCart: number;
   cartItems: number;
   cartPage: number;
-  sortIndex: number;
-  sortView: 'tile' | 'list';
+  sortIndex: SortKind;
+  sortView: SortView;
   filters: Filters;
   products: Product[];
 }

@@ -3,9 +3,11 @@ export type routerMode = 'history' | 'hash';
 export type callbackType = (...arg: string[]) => void;
 
 export enum SortKind {
-  'Most Popular',
-  'Alphabet A - Z',
-  'Alphabet Z - A',
-  '$ Low to High',
-  '$ High to Low',
+  popular = 'Most Popular',
+  alphabetUp = 'Alphabet A - Z',
+  alphabetDown = 'Alphabet Z - A',
+  priceUp = '$ Low to High',
+  priceDown = '$ High to Low',
 }
+
+export type SortView = 'tile' | 'list';

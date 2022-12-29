@@ -55,21 +55,17 @@ class Router {
     if (this.mode === 'history') {
       window.history.pushState(null, '', this.root + this.clearSlashes(path));
     } else {
-      window.location.href = `${window.location.href.replace(/#(.*)$/, '')}#${path}`;
+      window.location.hash = `${window.location.hash.replace(/#(.*)$/, '')}#${path}`;
     }
     return this;
   };
 
   listen = (): void => {
-    window.addEventListener('load', this.resolveRoute);
     window.addEventListener('hashchange', this.resolveRoute);
   };
 
   resolveRoute = (): void => {
-    if (!this.current) this.navigate(this.root);
-    if (this.current === this.getFragment()) return;
     this.current = this.getFragment();
-
     this.routes.some((route) => {
       const match: RegExpMatchArray | null = (this.current as string).match(route.path);
       if (match) {

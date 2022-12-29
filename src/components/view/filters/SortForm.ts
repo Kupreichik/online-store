@@ -1,20 +1,23 @@
+import { app } from '../../../index';
 import { SortKind } from '../../../types/types';
-import { DEFAULT_STATE } from '../../state/State';
+import { STATE, DEFAULT_STATE } from '../../state/State';
 
 export class SortForm {
-  sort: number = DEFAULT_STATE.sortIndex;
+  sort: SortKind = DEFAULT_STATE.sortIndex;
 
   private getState(): void {
-    this.sort = DEFAULT_STATE.sortIndex;
+    this.sort = STATE.sortIndex;
   }
 
-  private createOption(optsCount: number): string {
+  private createOption(): string {
     let string = '';
-    for (let i = 0; i < optsCount; i += 1) {
+    const sortOptions = Object.values(SortKind);
+
+    for (const option of sortOptions) {
       string += `
-      <option class="products__sort-option" value="${SortKind[i]}" ${
-        SortKind[this.sort] === SortKind[i] ? 'selected' : ''
-      }>${SortKind[i]}</option>
+      <option class="products__sort-option" value="${option}" ${
+        this.sort === option ? 'selected' : ''
+      }>${option}</option>
       `;
     }
     return string;
@@ -27,10 +30,17 @@ export class SortForm {
         <fieldset class="products__sort-fieldset">
           <legend>Sort By: </legend>
           <select name="sort" class="products__sort-select">
-          ${this.createOption(5)}
+          ${this.createOption()}
           </select>
         </fieldset>
       </form>
     `;
+  }
+
+  listener(): void {
+    const selectEl = document.querySelector('.products__sort-select') as HTMLSelectElement;
+    selectEl.onchange = () => {
+      app.controller.setActualState('sort', `${selectEl.value}`);
+    };
   }
 }
