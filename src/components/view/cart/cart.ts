@@ -1,22 +1,23 @@
 import { productsData } from '../../../data/products';
 import { Product, CartState } from '../../../types/interfaces';
-import { DEFAULT_STATE } from '../../state/State';
+import { STATE } from '../../state/State';
+import CarTotal from './cartTotal';
+import СartPagination from './cartPagination';
 
 class Cart {
-  //рендер страницы
-  render(products: CartState[] = DEFAULT_STATE.cartProducts.slice(0, 3)): string {
+  cartTotal = new CarTotal();
+  cartPagination = new СartPagination();
+  main = document.querySelector('.main') as HTMLElement;
+
+  render(products: CartState[] = STATE.cartProducts.slice(0, STATE.cartItems)): string {
     let htmlInner = '';
     let html = '';
-    let sumPrice = 0;
-    sumPrice += DEFAULT_STATE.cartProducts.reduce((acc, el) => {
-      return (acc += el.price * el.count);
-    }, sumPrice);
 
-    products.forEach((elCart, i) => {
+    products.forEach((elCart) => {
       const product = productsData.find((elAllProducts) => elAllProducts.id === elCart.id) as Product;
       htmlInner += `
-          <div class="cart__item">
-            <p class="cart__item-text">${(DEFAULT_STATE.cartPage - 1) * 3 + (i + 1)}</p>
+          <div id="id${product.id}" class="cart__item">
+            <p class="cart__item-text">${STATE.cartProducts.indexOf(elCart) + 1}</p>
             <img class="cart__item-img"src="${product.images[0]}" alt="flower">
             <div class="cart__item-center>
               <p class="cart__item-text">${product.title}</p>
@@ -27,7 +28,7 @@ class Cart {
               <button class="cart-btn minus" data-id="${product.id}">
                 -
               </button>
-              <p class="cart__item-text">${elCart.count}</p>
+              <p class="cart__item-text counter">${elCart.count}</p>
               <button class="cart-btn plus" data-id="${product.id}">
                 +
               </button>
@@ -45,12 +46,12 @@ class Cart {
               <div class="cart__products-controls">
                 <div class="cart__products-limit">
                   Items:
-                  <input class="cart__products-input" type="text" value="${DEFAULT_STATE.cartItems}"/>
+                  <input class="cart__products-input" type="number" min="1" value="${STATE.cartItems}"/>
                 </div>
                 <div class="cart__products-pages">
                   Page:
                   <button class="cart__products-btn prev">&lt;</button>
-                  <span class="cart__products-number">${DEFAULT_STATE.cartPage}</span>
+                  <span class="cart__products-number">${STATE.cartPage}</span>
                   <button class="cart__products-btn next">&gt;</button>
                 </div>
               </div>
@@ -59,115 +60,98 @@ class Cart {
               ${htmlInner}
             </div>
           </div>
-            <div class="cart__total">
-              <h2 class="cart__total-title">Summary</h2>
-              <div class="cart__total-spec">
-                <div class="cart__total-products"><span>Products:</span> ${DEFAULT_STATE.cartProducts.length}</div>
-                <div class="cart__total-price"><span>Total:</span> ${sumPrice} $</div>
-              </div>
-              <div class="cart__promo">
-                <div class="cart__promo-code">
-                  <input class="cart__promo-input" type="search" placeholder="Enter promo code" />
-                </div>
-                <span class="cart__promo-hint">Promo for test: 'RS', 'EPM'</span>
-              </div>
-              <button class="cart__total-btn btn">BUY NOW</button>
-            </div>
-          </div>
+          ${this.cartTotal.render()}
         </div>
       </div>
         `;
-    this.changeHeader(sumPrice, products.length);
-    return html;
+    return STATE.cartProducts.length === 0 ? `<p class="cart-empty" >Cart is Empty<p>` : html;
   }
 
   //добавление слушателей на кнопки и изменение инпута
   setListeners(): void {
-    (document.querySelector('.cart__items') as HTMLElement).onclick = (event) => {
+    //add listners total
+    this.cartTotal.setListeners();
+
+    //add and remove product
+    const cartItems = document.querySelector('.cart__items') as HTMLElement;
+    cartItems.onclick = (event) => {
       const target = event.target as HTMLElement;
       if (target.classList.contains('plus')) {
-        this.plus(target.dataset.id);
+        this.addProduct(target.dataset.id);
+        this.cartTotal.changeValue();
       } else if (target.classList.contains('minus')) {
-        this.minus(target.dataset.id);
+        this.removeProduct(target.dataset.id);
+        this.cartTotal.changeValue();
       }
     };
-    (document.querySelector('.cart__products-input') as HTMLInputElement).onchange = (event) => {
-      const target = event.target as HTMLInputElement;
-      this.pagination(+target.value, DEFAULT_STATE.cartPage);
-    };
-    (document.querySelector('.prev') as HTMLElement).onclick = () => {
-      if (DEFAULT_STATE.cartPage !== 1) {
-        DEFAULT_STATE.cartPage -= 1;
-        this.pagination(DEFAULT_STATE.cartItems, DEFAULT_STATE.cartPage);
-        this.setListeners();
-      }
-    };
-    (document.querySelector('.next') as HTMLElement).onclick = () => {
-      if (DEFAULT_STATE.cartPage < DEFAULT_STATE.cartProducts.length / DEFAULT_STATE.cartItems) {
-        DEFAULT_STATE.cartPage += 1;
-        this.pagination(DEFAULT_STATE.cartItems, DEFAULT_STATE.cartPage);
-        this.setListeners();
-      }
-    };
-  }
 
-  //плюс количество одного товара
-  plus(id: string | undefined): void {
-    const main = document.querySelector('.main') as HTMLElement;
-    DEFAULT_STATE.cartProducts.forEach((el) => {
-      if (el.id === Number(id)) {
-        el.count += 1;
-        main.innerHTML = this.render();
-        this.setListeners();
-      }
-    });
-  }
-
-  //минус количество одного товара
-  minus(id: string | undefined): void {
-    const main = document.querySelector('.main') as HTMLElement;
-    const arr: CartState[] | never = [];
-    DEFAULT_STATE.cartProducts.forEach((el) => {
-      arr.push(el);
-      if (el.id === Number(id)) {
-        if (el.count === 1) {
-          arr.pop();
-        } else {
-          el.count -= 1;
-        }
-      }
-      DEFAULT_STATE.cartProducts = arr;
-      main.innerHTML = this.render();
+    //change input
+    const cartProductsInput = document.querySelector('.cart__products-input') as HTMLInputElement;
+    cartProductsInput.oninput = () => {
+      STATE.cartItems = Number(cartProductsInput.value);
+      const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
+      this.main.innerHTML = this.render(chank);
       this.setListeners();
+    };
+
+    //prev page cart
+    const prev = document.querySelector('.prev') as HTMLElement;
+    prev.onclick = () => {
+      if (STATE.cartPage !== 1) {
+        STATE.cartPage -= 1;
+        const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
+        this.main.innerHTML = this.render(chank);
+        this.setListeners();
+      }
+    };
+
+    //next page cart
+    const next = document.querySelector('.next') as HTMLElement;
+    next.onclick = () => {
+      if (STATE.cartPage < STATE.cartProducts.length / STATE.cartItems) {
+        STATE.cartPage++;
+        const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
+        this.main.innerHTML = this.render(chank);
+        this.setListeners();
+      }
+    };
+  }
+
+  //plus product
+  addProduct(id: string | undefined): void {
+    console.log(STATE.cartProducts);
+    STATE.cartProducts.forEach((el) => {
+      if (el.id === Number(id)) {
+        el.count++;
+        STATE.amountProductsCart++;
+        STATE.sumPrice += el.price;
+        this.cartTotal.changeValue();
+        (this.main.querySelector(`#id${id} > .cart__add > p.counter`) as HTMLElement).innerHTML = el.count.toString();
+      }
     });
   }
 
-  //изменение в шапке количество в корзине и тотал
-  changeHeader(sumPrice: number, allProductCount: number): void {
-    (document.querySelector('.header__total-price') as HTMLElement).innerHTML = `${sumPrice} $`;
-    (document.querySelector('.header__cart-count') as HTMLElement).innerHTML = `(${allProductCount})`;
-  }
-
-  //разбитие на страницы в зависимости от инпута и номера страницы.
-  pagination(value: number, page: number) {
-    DEFAULT_STATE.cartItems = +value;
-    const cartItems = DEFAULT_STATE.cartItems;
-    const arr = DEFAULT_STATE.cartProducts;
-    const size = Number(value);
-    const pages = Math.ceil(arr.length / size);
-
-    if (pages < page) return;
-
-    const startEl = (page - 1) * cartItems;
-    const endEl = startEl + cartItems;
-
-    console.log(startEl, 'startEl');
-    console.log(endEl, 'endEl');
-    console.log(arr.slice(startEl, endEl), 'arr.slice(startEl, endEl)');
-
-    const main = document.querySelector('.main') as HTMLElement;
-    main.innerHTML = this.render(arr.slice(startEl, endEl));
-    this.setListeners();
+  //minus product
+  removeProduct(id: string | undefined): void {
+    const product = STATE.cartProducts.find((el) => el.id === Number(id)) as CartState;
+    if (product.count === 1) {
+      STATE.cartProducts = STATE.cartProducts.filter((el) => el.id !== Number(id));
+      STATE.amountProductsCart = STATE.cartProducts.reduce((acc, el) => acc + el.count, 0);
+      STATE.sumPrice -= product.price;
+      const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
+      console.log(STATE.cartItems, STATE.cartPage, 'STATE.cartItems, STATE.cartPage');
+      console.log(chank, 'chank');
+      this.main.innerHTML = this.render(chank);
+      this.setListeners();
+    } else {
+      product.count--;
+      STATE.amountProductsCart--;
+      STATE.sumPrice -= product.price;
+      this.cartTotal.changeValue();
+      (this.main.querySelector(
+        `#id${id} > .cart__add > p.counter`
+      ) as HTMLElement).innerHTML = product.count.toString();
+    }
   }
 }
 

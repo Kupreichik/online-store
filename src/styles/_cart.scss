@@ -1,3 +1,14 @@
+.cart-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40px;
+  text-align: center;
+}
+
+
+
 .cart__inner {
   display: flex;
   gap: 20px;
@@ -149,4 +160,10 @@
   color: white;
   background: $green;
   cursor: pointer;
+}
+
+@media screen and (max-width: 575px) {
+  .cart-empty { {
+    font-size: 30;
+  }
 }

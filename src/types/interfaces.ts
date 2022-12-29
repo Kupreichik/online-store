@@ -26,7 +26,8 @@ export interface ComponentConfig {
 
 export interface AppState {
   cartProducts: CartState[];
-  amountCart: number;
+  sumPrice: number;
+  amountProductsCart: number;
   cartItems: number;
   cartPage: number;
   sortIndex: number;

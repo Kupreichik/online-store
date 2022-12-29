@@ -1,9 +1,11 @@
 import Router from '../router/Router';
+import Header from '../view/cart/header';
 import { View } from '../view/view';
 
 export class App {
   router: Router;
   view: View;
+  header: Header = new Header();
 
   constructor() {
     this.router = new Router({
@@ -17,8 +19,10 @@ export class App {
     const el = document.querySelector('.main') as HTMLElement;
     this.router
       .add(/main/, () => {
-        el.innerHTML = this.view.main.render();
-        this.view.main.setListeners();
+        // el.innerHTML = this.view.main.render();
+        // this.view.main.setListeners();
+        el.innerHTML = this.view.cart.render();
+        this.view.cart.setListeners();
       })
       .add(/cart/, () => {
         el.innerHTML = this.view.cart.render();
