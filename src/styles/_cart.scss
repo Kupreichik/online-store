@@ -7,8 +7,6 @@
   text-align: center;
 }
 
-
-
 .cart__inner {
   display: flex;
   gap: 20px;
@@ -163,7 +161,7 @@
 }
 
 @media screen and (max-width: 575px) {
-  .cart-empty { {
-    font-size: 30;
+  .cart-empty {
+    font-size: 30px;
   }
 }

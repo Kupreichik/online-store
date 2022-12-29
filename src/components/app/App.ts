@@ -19,10 +19,8 @@ export class App {
     const el = document.querySelector('.main') as HTMLElement;
     this.router
       .add(/main/, () => {
-        // el.innerHTML = this.view.main.render();
-        // this.view.main.setListeners();
-        el.innerHTML = this.view.cart.render();
-        this.view.cart.setListeners();
+        el.innerHTML = this.view.main.render();
+        this.view.main.setListeners();
       })
       .add(/cart/, () => {
         el.innerHTML = this.view.cart.render();
