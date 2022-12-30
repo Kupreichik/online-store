@@ -20,11 +20,11 @@ export class App {
   start(): void {
     window.onload = () => {
       this.controller.syncState();
-      // this.controller.getLocalStorage();
+      this.controller.getLocalStorage();
       this.router.resolveRoute();
     };
     window.onbeforeunload = () => {
-      // this.controller.setLlocalStorage();
+      this.controller.setLocalStorage();
     };
     const el = document.querySelector('.main') as HTMLElement;
     this.router

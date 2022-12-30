@@ -195,4 +195,15 @@ export class Controller {
     (document.querySelector('.header__total-price') as HTMLElement).innerText = `${this.getSumPrice()}.00 $`;
     (document.querySelector('.header__cart-count') as HTMLElement).innerText = `(${this.getAmountCart()})`;
   }
+
+  setLocalStorage(): void {
+    localStorage.setItem('cartProducts', JSON.stringify(STATE.cartProducts));
+  }
+
+  getLocalStorage(): void {
+    if (localStorage.getItem('cartProducts')) {
+      STATE.cartProducts = JSON.parse(localStorage.getItem('cartProducts') as string);
+    }
+    this.setHeaderCart();
+  }
 }
