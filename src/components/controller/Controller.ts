@@ -94,13 +94,13 @@ export class Controller {
     url.search = '';
     url.searchParams.set('sort', STATE.sortIndex.toString());
     url.searchParams.set('sortView', STATE.sortView);
-    window.history.pushState(STATE, '', url.toString());
+    window.history.replaceState(STATE, '', url.toString());
   }
 
   private setSearchParams(key: string, values: string): void {
     const url: URL = new URL(window.location.href);
     url.searchParams.set(key, values);
-    window.history.pushState(null, '', url.toString());
+    window.history.replaceState(null, '', url.toString());
     this.setLinkHref();
   }
 
