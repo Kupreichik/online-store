@@ -1,12 +1,13 @@
 import { productsData } from '../../../data/products';
 import { Product, CartState } from '../../../types/interfaces';
 import { STATE } from '../../state/State';
-import CarTotal from './cartTotal';
+import CartTotal from './cartTotal';
 import СartPagination from './cartPagination';
+import { app } from '../../../index';
 
 class Cart {
-  cartTotal = new CarTotal();
-  cartPagination = new СartPagination();
+  cartTotal: CartTotal = new CartTotal();
+  cartPagination: СartPagination = new СartPagination();
   main = document.querySelector('.main') as HTMLElement;
 
   render(products: CartState[] = STATE.cartProducts.slice(0, STATE.cartItems)): string {
@@ -17,13 +18,16 @@ class Cart {
       const product = productsData.find((elAllProducts) => elAllProducts.id === elCart.id) as Product;
       htmlInner += `
           <div id="id${product.id}" class="cart__item">
-            <p class="cart__item-text">${STATE.cartProducts.indexOf(elCart) + 1}</p>
+            <p class="cart__item-text cart__item-number">${STATE.cartProducts.indexOf(elCart) + 1}</p>
             <img class="cart__item-img"src="${product.images[0]}" alt="flower">
-            <div class="cart__item-center>
+            <div class="cart__item-title">
               <p class="cart__item-text">${product.title}</p>
               <p class="cart__item-text cart__item-accent">${product.light}</p>
             </div>
-            <p class="cart__item-text cart__item-price">${product.price} $</p>
+            <div class="cart__item-prices">
+              <p class="cart__item-text cart__item-price">${product.price} $</p>
+              <p class="cart__item-text cart__item-accent">(stock: ${product.stock})</p>
+            </div>
             <div class="cart__add">
               <button class="cart-btn minus" data-id="${product.id}">
                 -
@@ -51,7 +55,7 @@ class Cart {
                 <div class="cart__products-pages">
                   Page:
                   <button class="cart__products-btn prev">&lt;</button>
-                  <span class="cart__products-number">${STATE.cartPage}</span>
+                  <span class="cart__products-number">${this.checkItemsPage()}</span>
                   <button class="cart__products-btn next">&gt;</button>
                 </div>
               </div>
@@ -67,7 +71,6 @@ class Cart {
     return STATE.cartProducts.length === 0 ? `<p class="cart-empty" >Cart is Empty<p>` : html;
   }
 
-  //добавление слушателей на кнопки и изменение инпута
   setListeners(): void {
     //add listners total
     this.cartTotal.setListeners();
@@ -77,28 +80,31 @@ class Cart {
     cartItems.onclick = (event) => {
       const target = event.target as HTMLElement;
       if (target.classList.contains('plus')) {
-        this.addProduct(target.dataset.id);
+        this.addProduct(target.dataset.id as string);
         this.cartTotal.changeValue();
       } else if (target.classList.contains('minus')) {
-        this.removeProduct(target.dataset.id);
-        this.cartTotal.changeValue();
+        this.removeProduct(target.dataset.id as string);
+        if (STATE.cartProducts.length !== 0) this.cartTotal.changeValue();
       }
     };
 
     //change input
     const cartProductsInput = document.querySelector('.cart__products-input') as HTMLInputElement;
     cartProductsInput.oninput = () => {
-      STATE.cartItems = Number(cartProductsInput.value);
+      if (+cartProductsInput.value < 1) cartProductsInput.value = '1';
+      app.controller.setActualState('items', cartProductsInput.value);
       const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
       this.main.innerHTML = this.render(chank);
+      this.cartTotal.changeValue();
       this.setListeners();
     };
 
     //prev page cart
     const prev = document.querySelector('.prev') as HTMLElement;
     prev.onclick = () => {
-      if (STATE.cartPage !== 1) {
-        STATE.cartPage -= 1;
+      if (STATE.cartPage > 1) {
+        STATE.cartPage--;
+        app.controller.setSearchParams('page', `${STATE.cartPage}`);
         const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
         this.main.innerHTML = this.render(chank);
         this.setListeners();
@@ -110,6 +116,7 @@ class Cart {
     next.onclick = () => {
       if (STATE.cartPage < STATE.cartProducts.length / STATE.cartItems) {
         STATE.cartPage++;
+        app.controller.setSearchParams('page', `${STATE.cartPage}`);
         const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
         this.main.innerHTML = this.render(chank);
         this.setListeners();
@@ -118,40 +125,33 @@ class Cart {
   }
 
   //plus product
-  addProduct(id: string | undefined): void {
-    console.log(STATE.cartProducts);
-    STATE.cartProducts.forEach((el) => {
-      if (el.id === Number(id)) {
-        el.count++;
-        STATE.amountProductsCart++;
-        STATE.sumPrice += el.price;
-        this.cartTotal.changeValue();
-        (this.main.querySelector(`#id${id} > .cart__add > p.counter`) as HTMLElement).innerHTML = el.count.toString();
-      }
-    });
+  addProduct(id: string): void {
+    const count = app.controller.addProdToCart(+id);
+    this.cartTotal.changeValue();
+    (this.main.querySelector(`#id${id} > .cart__add > p.counter`) as HTMLElement).innerHTML = count.toString();
+    app.controller.setHeaderCart();
   }
 
   //minus product
-  removeProduct(id: string | undefined): void {
-    const product = STATE.cartProducts.find((el) => el.id === Number(id)) as CartState;
-    if (product.count === 1) {
-      STATE.cartProducts = STATE.cartProducts.filter((el) => el.id !== Number(id));
-      STATE.amountProductsCart = STATE.cartProducts.reduce((acc, el) => acc + el.count, 0);
-      STATE.sumPrice -= product.price;
-      const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
-      console.log(STATE.cartItems, STATE.cartPage, 'STATE.cartItems, STATE.cartPage');
-      console.log(chank, 'chank');
-      this.main.innerHTML = this.render(chank);
-      this.setListeners();
-    } else {
-      product.count--;
-      STATE.amountProductsCart--;
-      STATE.sumPrice -= product.price;
+  removeProduct(id: string): void {
+    const count = app.controller.removeProdFromCart(+id);
+    console.log(count, 'count');
+    if (count) {
       this.cartTotal.changeValue();
-      (this.main.querySelector(
-        `#id${id} > .cart__add > p.counter`
-      ) as HTMLElement).innerHTML = product.count.toString();
+      (this.main.querySelector(`#id${id} > .cart__add > p.counter`) as HTMLElement).innerHTML = count.toString();
+    } else {
+      const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
+      this.main.innerHTML = this.render(chank);
+      if (STATE.cartProducts.length !== 0) this.setListeners();
     }
+  }
+
+  checkItemsPage(): number {
+    if (STATE.cartPage > STATE.cartProducts.length / STATE.cartItems) {
+      STATE.cartPage = 1;
+      app.controller.setSearchParams('page', `${STATE.cartPage}`);
+    }
+    return STATE.cartPage;
   }
 }
 

@@ -1,13 +1,12 @@
 import { Controller } from '../controller/Controller';
 import Router from '../router/Router';
-import Header from '../view/cart/header';
+import { STATE } from '../state/State';
 import { View } from '../view/view';
 
 export class App {
   router: Router;
   controller: Controller;
   view: View;
-  header: Header = new Header();
 
   constructor() {
     this.router = new Router({
@@ -21,7 +20,11 @@ export class App {
   start(): void {
     window.onload = () => {
       this.controller.syncState();
+      // this.controller.getLocalStorage();
       this.router.resolveRoute();
+    };
+    window.onbeforeunload = () => {
+      // this.controller.setLlocalStorage();
     };
     const el = document.querySelector('.main') as HTMLElement;
     this.router
@@ -31,7 +34,7 @@ export class App {
       })
       .add(/cart/, () => {
         el.innerHTML = this.view.cart.render();
-        this.view.cart.setListeners();
+        if (STATE.cartProducts.length !== 0) this.view.cart.setListeners();
       })
       .add(/id\/([0-9]*)/, (id: string) => {
         el.textContent = `${id} - product id`;

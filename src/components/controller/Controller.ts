@@ -1,4 +1,3 @@
-/* eslint-disable no-case-declarations */
 import { productsData } from '../../data/products';
 import { app } from '../../index';
 import { CartState, Product } from '../../types/interfaces';
@@ -58,7 +57,18 @@ export class Controller {
           this.addProdToCart(+value);
         }
         break;
+
+      case 'items':
+        STATE.cartItems = +value;
+        this.setSearchParams(key, value);
+        break;
+
+      case 'page':
+        STATE.cartPage = +value;
+        this.setSearchParams(key, value);
+        break;
     }
+
     STATE.products = this.productFilter();
     if (isRerender) {
       app.router.resolveRoute();
@@ -97,7 +107,7 @@ export class Controller {
     window.history.pushState(STATE, '', url.toString());
   }
 
-  private setSearchParams(key: string, values: string): void {
+  setSearchParams(key: string, values: string): void {
     const url: URL = new URL(window.location.href);
     url.searchParams.set(key, values);
     window.history.pushState(null, '', url.toString());
@@ -143,29 +153,34 @@ export class Controller {
     this.setSearchParams(key, arr.toString());
   }
 
-  addProdToCart(id: number): void {
-    const prod: CartState | undefined = STATE.cartProducts.find((prod) => prod.id === id);
+  addProdToCart(id: number): number {
+    let prod: CartState | undefined = STATE.cartProducts.find((prod) => prod.id === id);
     const prodData = productsData.find((product) => product.id === id) as Product;
     if (prod) {
       if (prod.count < prodData.stock) prod.count += 1;
     } else {
-      STATE.cartProducts.push({
+      prod = {
         id: id,
         count: 1,
         price: prodData.price,
-      });
+      };
+      STATE.cartProducts.push(prod);
     }
     this.setHeaderCart();
+    return prod.count;
   }
 
-  removeProdFromCart(id: number, isDrop = false): void {
+  removeProdFromCart(id: number, isDrop = false): number | undefined {
     const prod = STATE.cartProducts.find((prod) => prod.id === id) as CartState;
     if (isDrop || prod.count === 1) {
       STATE.cartProducts.splice(STATE.cartProducts.indexOf(prod), 1);
+      this.setHeaderCart();
+      return undefined;
     } else {
       prod.count -= 1;
     }
     this.setHeaderCart();
+    return prod.count;
   }
 
   getAmountCart(): number {
