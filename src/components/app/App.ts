@@ -31,7 +31,8 @@ export class App {
         el.textContent = 'You are in cart';
       })
       .add(/id\/([0-9]*)/, (id: string) => {
-        el.textContent = `${id} - product id`;
+        el.innerHTML = this.view.product.render(id);
+        this.view.product.setListeners();
       });
   }
 }
