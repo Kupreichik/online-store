@@ -53,7 +53,7 @@ export class Controller {
 
       case 'cart':
         if (STATE.cartProducts.find((prod) => prod.id === +value)) {
-          this.removeProdFromCart(+value);
+          this.removeProdFromCart(+value, true);
         } else {
           this.addProdToCart(+value);
         }
