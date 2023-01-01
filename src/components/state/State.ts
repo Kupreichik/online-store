@@ -6,6 +6,7 @@ export const DEFAULT_STATE: AppState = {
   cartProducts: [],
   cartItems: 3,
   cartPage: 1,
+  cartPromocode: [],
   sortIndex: SortKind.popular,
   sortView: 'tile',
   filters: {
