@@ -159,10 +159,62 @@
   max-width: 190px;
 }
 
+.cart__promo-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  background: url(../assets/img/icons/cross.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .cart__total-btn {
   color: white;
   background: $green;
   cursor: pointer;
+}
+
+.cart__promo-hint {
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.promo-codes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  max-width: 188px;
+  width: 100%;
+}
+
+.promo-codes__applie,
+.promo-codes__prev {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  text-align: center;
+}
+
+.promo-codes__applie > p,
+.promo-codes__prev > p {
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.promo-codes__btn {
+  cursor: pointer;
+  color: white;
+  background: $green;
+  border: 1px solid $grey;
+  transition: 0.3s;
+}
+
+.promo-codes__btn:hover {
+  border-color: $darkGreen;
+  font-weight: 600;
 }
 
 @media screen and (max-width: 991px) {

@@ -1,6 +1,6 @@
 import { productsData } from '../../data/products';
 import { app } from '../../index';
-import { CartState, Product } from '../../types/interfaces';
+import { CartPromocodeState, CartState, Product } from '../../types/interfaces';
 import { SortKind, SortView } from '../../types/types';
 import { STATE, DEFAULT_STATE } from '../state/State';
 
@@ -191,19 +191,33 @@ export class Controller {
     return STATE.cartProducts.reduce((curr, prod) => curr + prod.count * prod.price, 0);
   }
 
+  getSumPriceWithPromo(): number {
+    const promo = STATE.cartPromocode.reduce((acc, el) => acc + el.disc / 100, 0);
+    return Math.round(this.getSumPrice() - this.getSumPrice() * promo);
+  }
+
   setHeaderCart(): void {
-    (document.querySelector('.header__total-price') as HTMLElement).innerText = `${this.getSumPrice()}.00 $`;
+    (document.querySelector('.header__total-price') as HTMLElement).innerText =
+      STATE.cartPromocode.length > 0 ? `${this.getSumPriceWithPromo()} $` : `${this.getSumPrice()} $`;
     (document.querySelector('.header__cart-count') as HTMLElement).innerText = `(${this.getAmountCart()})`;
   }
 
   setLocalStorage(): void {
     localStorage.setItem('cartProducts', JSON.stringify(STATE.cartProducts));
+    localStorage.setItem('cartPromocode', JSON.stringify(STATE.cartPromocode));
   }
 
   getLocalStorage(): void {
     if (localStorage.getItem('cartProducts')) {
       STATE.cartProducts = JSON.parse(localStorage.getItem('cartProducts') as string);
     }
+    if (localStorage.getItem('cartPromocode')) {
+      STATE.cartPromocode = JSON.parse(localStorage.getItem('cartPromocode') as string);
+    }
     this.setHeaderCart();
+  }
+
+  addPromocode(data: CartPromocodeState): void {
+    STATE.cartPromocode.push(data);
   }
 }

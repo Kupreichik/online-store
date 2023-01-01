@@ -64,7 +64,9 @@ class Cart {
               ${htmlInner}
             </div>
           </div>
-          ${this.cartTotal.render()}
+          <div class="cart__total">
+            ${this.cartTotal.render()}
+          </div>
         </div>
       </div>
         `;
@@ -130,15 +132,20 @@ class Cart {
     this.cartTotal.changeValue();
     (this.main.querySelector(`#id${id} > .cart__add > p.counter`) as HTMLElement).innerHTML = count.toString();
     app.controller.setHeaderCart();
+    if (STATE.cartPromocode.length > 0)
+      (document.querySelector('.cart__total-sale') as HTMLElement).innerText =
+        'Total: ' + app.controller.getSumPriceWithPromo() + '$';
   }
 
   //minus product
   removeProduct(id: string): void {
     const count = app.controller.removeProdFromCart(+id);
-    console.log(count, 'count');
     if (count) {
       this.cartTotal.changeValue();
       (this.main.querySelector(`#id${id} > .cart__add > p.counter`) as HTMLElement).innerHTML = count.toString();
+      if (STATE.cartPromocode.length > 0)
+        (document.querySelector('.cart__total-sale') as HTMLElement).innerText =
+          'Total: ' + app.controller.getSumPriceWithPromo() + '$';
     } else {
       const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
       this.main.innerHTML = this.render(chank);

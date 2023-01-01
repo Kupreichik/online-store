@@ -28,6 +28,7 @@ export interface AppState {
   cartProducts: CartState[];
   cartItems: number;
   cartPage: number;
+  cartPromocode: CartPromocodeState[];
   sortIndex: SortKind;
   sortView: SortView;
   filters: Filters;
@@ -61,4 +62,10 @@ export interface CartState {
   id: number;
   count: number;
   price: number;
+}
+
+export interface CartPromocodeState {
+  id: string;
+  name: string;
+  disc: number;
 }
