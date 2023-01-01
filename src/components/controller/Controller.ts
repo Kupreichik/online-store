@@ -198,7 +198,7 @@ export class Controller {
 
   setHeaderCart(): void {
     (document.querySelector('.header__total-price') as HTMLElement).innerText =
-      STATE.cartPromocode.length > 0 ? `${this.getSumPriceWithPromo()} $` : `${this.getSumPrice()} $`;
+      STATE.cartPromocode.length > 0 ? `${this.getSumPriceWithPromo()}$` : `${this.getSumPrice()}$`;
     (document.querySelector('.header__cart-count') as HTMLElement).innerText = `(${this.getAmountCart()})`;
   }
 

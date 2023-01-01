@@ -29,7 +29,7 @@ class CarTotal {
           STATE.cartPromocode.length > 0 ? this.cartPromocode.renderAdd(STATE.cartPromocode) : ''
         }</div>
         <button class="cart__total-btn btn">Buy Now</button>
-`;
+    `;
   }
 
   setListeners(): void {
@@ -42,7 +42,7 @@ class CarTotal {
       if (promocode) {
         promoCodesPrev.innerHTML = this.cartPromocode.renderPrev(promocode);
         const addBtn = document.querySelector('.promo-codes__btn-add') as HTMLButtonElement;
-        if (STATE.cartPromocode.includes(promocode)) {
+        if (STATE.cartPromocode.find((el) => el.id === promocode.id)) {
           addBtn.style.display = 'none';
         }
         addBtn.onclick = () => {
