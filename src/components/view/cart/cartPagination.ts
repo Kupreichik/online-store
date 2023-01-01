@@ -4,7 +4,6 @@ import { STATE } from '../../state/State';
 class СartPagination {
   getChank(items: number, page: number): CartState[] {
     const arr = STATE.cartProducts;
-    console.log(arr);
     const pages = Math.ceil(arr.length / items);
 
     const startEl = (page - 1) * items;

@@ -156,7 +156,7 @@ class Cart {
   }
 
   checkItemsPage(): number {
-    if (STATE.cartPage > STATE.cartProducts.length / STATE.cartItems) {
+    if (STATE.cartPage > Math.ceil(STATE.cartProducts.length / STATE.cartItems)) {
       STATE.cartPage = 1;
       app.controller.setSearchParams('page', `${STATE.cartPage}`);
     }
