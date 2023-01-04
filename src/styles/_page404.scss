@@ -1,0 +1,26 @@
+.page404-container {
+  margin-top: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.page404-oops {
+  font-size: 2rem;
+}
+
+.page404_main-link {
+  margin: auto;
+  display: block;
+  width: 250px;
+  height: 2.5rem;
+  background-color: $green;
+  color: white;
+  line-height: 2.5rem;
+}
+
+.page404_main-link:hover {
+  font-weight: 600;
+}
