@@ -1,3 +1,4 @@
+import { app } from '../../index';
 import { Route } from '../../types/interfaces';
 import { callbackType, routerMode } from '../../types/types';
 
@@ -65,6 +66,10 @@ class Router {
   };
 
   resolveRoute = (): void => {
+    if (window.location.pathname !== '/') {
+      app.view.render404page();
+      return;
+    }
     this.current = this.getFragment();
     this.routes.some((route) => {
       const match: RegExpMatchArray | null = (this.current as string).match(route.path);
@@ -72,6 +77,8 @@ class Router {
         match.shift();
         route.cb.apply({}, match);
         return match;
+      } else {
+        app.view.render404page();
       }
       return false;
     });
