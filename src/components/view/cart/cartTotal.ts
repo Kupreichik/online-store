@@ -2,9 +2,11 @@ import { promocodesData } from '../../../data/promocodes';
 import { app } from '../../../index';
 import { STATE } from '../../state/State';
 import cartPromocode from './cartPromocode';
+import Popup from '../popup/popup';
 
 class CarTotal {
   cartPromocode: cartPromocode = new cartPromocode();
+  popup: Popup = new Popup();
   render() {
     return `
         <h2 class="cart__total-title">Summary</h2>
@@ -75,7 +77,23 @@ class CarTotal {
     }
 
     const cartTotalBtn = document.querySelector('.cart__total-btn') as HTMLElement;
-    cartTotalBtn.onclick = () => console.log('popup');
+    const body = document.querySelector('body') as HTMLElement;
+    const popup = document.querySelector('.popup') as HTMLElement;
+    cartTotalBtn.onclick = () => {
+      body.classList.add('shadow');
+      popup.classList.add('shadow');
+      popup.innerHTML = this.popup.render();
+      this.popup.setListeners();
+    };
+
+    popup.onclick = (event) => {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('shadow')) {
+        body.classList.remove('shadow');
+        popup.classList.remove('shadow');
+        popup.innerHTML = '';
+      }
+    };
   }
 
   changeValue(): void {
