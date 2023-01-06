@@ -2,6 +2,7 @@ import { STATE } from '../../state/State';
 import { app } from '../../../index';
 
 class Popup {
+  isTrue = false;
   render() {
     return `
       <div class="popup__inner">
@@ -92,8 +93,6 @@ class Popup {
   setListeners(): void {
     const body = document.querySelector('body') as HTMLElement;
     const popupForm = document.querySelector('.popup-form') as HTMLInputElement;
-    const personFormInputs = popupForm.querySelectorAll('.popup-form__item-input') as NodeListOf<HTMLInputElement>;
-    const cardFormInputs = popupForm.querySelectorAll('.popup-form__card-item-input') as NodeListOf<HTMLInputElement>;
     const popupFormName = document.querySelector('.popup-form__name-input') as HTMLInputElement;
     const popupFormPhone = document.querySelector('.popup-form__phone-input') as HTMLInputElement;
     const popupFormAdress = document.querySelector('.popup-form__adress-input') as HTMLInputElement;
@@ -101,83 +100,25 @@ class Popup {
     const popupFormCardNumber = document.querySelector('.popup-form__card-number-input') as HTMLInputElement;
     const popupFormCardValid = document.querySelector('.popup-form__card-valid-input') as HTMLInputElement;
     const popupFormCardCvv = document.querySelector('.popup-form__card-cvv-input') as HTMLInputElement;
-    let isTrue = true;
 
     popupForm.onsubmit = (event) => {
       event.preventDefault();
-      const nameVal = popupFormName.value;
-      const phoneVal = popupFormPhone.value;
-      const adressVal = popupFormAdress.value;
-      const emailVal = popupFormEmail.value;
-      const cardNumberVal = popupFormCardNumber.value;
-      const cardValidVal = popupFormCardValid.value;
-      const cardCvvlVal = popupFormCardCvv.value;
 
-      personFormInputs.forEach((input) => {
-        this.removeError(input);
-      });
+      this.setError(popupFormName, this.checkName);
 
-      if (!this.checkName(nameVal)) {
-        popupFormName.classList.add('error');
-        this.createError(popupFormName);
-        isTrue = false;
-      } else {
-        popupFormName.classList.remove('error');
-      }
+      this.setError(popupFormPhone, this.checkPhone);
 
-      if (!this.checkPhone(phoneVal)) {
-        popupFormPhone.classList.add('error');
-        this.createError(popupFormPhone);
-        isTrue = false;
-      } else {
-        popupFormPhone.classList.remove('error');
-      }
+      this.setError(popupFormAdress, this.checkAdress);
 
-      if (!this.checkAdress(adressVal)) {
-        popupFormAdress.classList.add('error');
-        this.createError(popupFormAdress);
-        isTrue = false;
-      } else {
-        popupFormAdress.classList.remove('error');
-      }
+      this.setError(popupFormEmail, this.checkEmail);
 
-      if (!this.checkEmail(emailVal)) {
-        popupFormEmail.classList.add('error');
-        this.createError(popupFormEmail);
-        isTrue = false;
-      } else {
-        popupFormEmail.classList.remove('error');
-      }
+      this.setCardError(popupFormCardNumber, this.checkCardNumber);
 
-      cardFormInputs.forEach((input) => {
-        this.removeCardError(input);
-      });
+      this.setCardError(popupFormCardValid, this.checkValid);
 
-      if (!this.checkCardNumber(cardNumberVal)) {
-        popupFormCardNumber.classList.add('error');
-        this.createCardError(popupFormCardNumber);
-        isTrue = false;
-      } else {
-        popupFormCardNumber.classList.remove('error');
-      }
+      this.setCardError(popupFormCardCvv, this.checkCvv);
 
-      if (!this.checkValid(cardValidVal)) {
-        popupFormCardValid.classList.add('error');
-        this.createCardError(popupFormCardValid);
-        isTrue = false;
-      } else {
-        popupFormCardValid.classList.remove('error');
-      }
-
-      if (!this.checkCvv(cardCvvlVal)) {
-        popupFormCardCvv.classList.add('error');
-        this.createCardError(popupFormCardCvv);
-        isTrue = false;
-      } else {
-        popupFormCardCvv.classList.remove('error');
-      }
-
-      if (isTrue) {
+      if (this.isTrue) {
         const main = document.querySelector('.main') as HTMLElement;
         STATE.cartProducts = [];
         main.innerHTML = app.view.cart.render();
@@ -200,60 +141,20 @@ class Popup {
       }
     };
 
-    popupFormName.oninput = (event) => {
-      const target = event.target as HTMLInputElement;
-      if (!this.checkName(target.value)) {
-        this.removeError(popupFormName);
-        popupFormName.classList.add('error');
-        this.createError(popupFormName);
-        isTrue = false;
-      } else {
-        this.removeError(popupFormName);
-        popupFormName.classList.remove('error');
-        isTrue = true;
-      }
+    popupFormName.oninput = () => {
+      this.setError(popupFormName, this.checkName, true);
     };
 
-    popupFormPhone.oninput = (event) => {
-      const target = event.target as HTMLInputElement;
-      if (!this.checkPhone(target.value)) {
-        this.removeError(popupFormPhone);
-        popupFormPhone.classList.add('error');
-        this.createError(popupFormPhone);
-        isTrue = false;
-      } else {
-        this.removeError(popupFormPhone);
-        popupFormPhone.classList.remove('error');
-        isTrue = true;
-      }
+    popupFormPhone.oninput = () => {
+      this.setError(popupFormPhone, this.checkPhone, true);
     };
 
-    popupFormAdress.oninput = (event) => {
-      const target = event.target as HTMLInputElement;
-      if (!this.checkAdress(target.value)) {
-        this.removeError(popupFormAdress);
-        popupFormAdress.classList.add('error');
-        this.createError(popupFormAdress);
-        isTrue = false;
-      } else {
-        this.removeError(popupFormAdress);
-        popupFormAdress.classList.remove('error');
-        isTrue = true;
-      }
+    popupFormAdress.oninput = () => {
+      this.setError(popupFormAdress, this.checkAdress, true);
     };
 
-    popupFormEmail.oninput = (event) => {
-      const target = event.target as HTMLInputElement;
-      if (!this.checkEmail(target.value)) {
-        this.removeError(popupFormEmail);
-        popupFormEmail.classList.add('error');
-        this.createError(popupFormEmail);
-        isTrue = false;
-      } else {
-        this.removeError(popupFormEmail);
-        popupFormEmail.classList.remove('error');
-        isTrue = true;
-      }
+    popupFormEmail.oninput = () => {
+      this.setError(popupFormEmail, this.checkEmail, true);
     };
 
     popupFormCardNumber.oninput = (event) => {
@@ -264,6 +165,7 @@ class Popup {
         .split(/(\d{4})/)
         .filter((item) => item !== '')
         .join(' ');
+
       if (target.value.match(/^5/)) {
         popupFormCardImg.src = 'https://www.mastercard.hu/content/dam/public/mastercardcom/eu/hu/images/mc-logo-52.svg';
       } else if (target.value.match(/^4/)) {
@@ -276,16 +178,7 @@ class Popup {
           'https://i.guim.co.uk/img/media/b73cc57cb1d46ae742efd06b6c58805e8600d482/16_0_2443_1466/master/2443.jpg?width=700&quality=85&auto=format&fit=max&s=fb1dca6cdd4589cd9ef2fc941935de71';
       }
 
-      if (!this.checkCardNumber(target.value)) {
-        this.removeCardError(popupFormCardNumber);
-        popupFormCardNumber.classList.add('error');
-        this.createCardError(target);
-        isTrue = false;
-      } else {
-        this.removeCardError(popupFormCardNumber);
-        popupFormCardNumber.classList.remove('error');
-        isTrue = true;
-      }
+      this.setCardError(target, this.checkCardNumber, true);
 
       if (Number.isNaN(+target.value.replace(/\s/g, ''))) target.value = target.value.slice(0, -1);
     };
@@ -300,39 +193,25 @@ class Popup {
           .join('/');
       }
 
-      if (
-        +target.value.slice(0, 2) === 0 ||
-        +target.value.slice(0, 2) > 12 ||
-        +target.value.slice(-2) === 0 ||
-        +target.value.slice(-2) > +new Date().getFullYear().toString().slice(-2)
-      ) {
-        this.removeCardError(popupFormCardValid);
-        this.createCardError(target);
-      } else if (!this.checkValid(target.value)) {
-        this.removeCardError(popupFormCardValid);
-        popupFormCardValid.classList.add('error');
-        this.createCardError(target);
-        isTrue = false;
+      if (Number.isNaN(+target.value.replace(/\s/g, '').replace(/\//g, ''))) target.value = target.value.slice(0, -1);
+
+      const targetDate: string = target.value
+        .split('/')
+        .reduce((acc, el, i) => (i === 0 ? acc + el + '/01/' : acc + ('20' + el)), '');
+
+      if (target.value.length !== 5 || +new Date() < +new Date(targetDate) || +target.value.slice(0, 2) > 12) {
+        if (!document.querySelector('.cardDate')) {
+          this.createCardError(target);
+          this.isTrue = false;
+        }
       } else {
-        this.removeCardError(popupFormCardValid);
-        popupFormCardValid.classList.remove('error');
-        isTrue = true;
+        this.setCardError(target, this.checkValid, true);
       }
     };
 
     popupFormCardCvv.oninput = (event) => {
       const target = event.target as HTMLInputElement;
-
-      if (!this.checkCvv(target.value)) {
-        this.removeCardError(popupFormCardCvv);
-        popupFormCardCvv.classList.add('error');
-        this.createCardError(target);
-        isTrue = false;
-      } else {
-        this.removeCardError(popupFormCardCvv);
-        popupFormCardCvv.classList.remove('error');
-        isTrue = true;
-      }
+      this.setCardError(target, this.checkCvv, true);
 
       if (Number.isNaN(+target.value)) target.value = target.value.slice(0, -1);
     };
@@ -346,6 +225,27 @@ class Popup {
     errorLable.textContent = 'error';
 
     parent.append(errorLable);
+  }
+
+  removeError(input: HTMLElement) {
+    const parent = input.parentNode as HTMLElement;
+    const errorLable = parent.querySelector('.popup-form__error') as HTMLElement;
+    if (input.classList.contains('error')) {
+      errorLable.remove();
+    }
+  }
+
+  setError(input: HTMLInputElement, cb: (str: string) => boolean, setTrue = false) {
+    if (!cb(input.value)) {
+      this.removeError(input);
+      input.classList.add('error');
+      this.createError(input);
+      this.isTrue = false;
+    } else {
+      this.removeError(input);
+      input.classList.remove('error');
+      if (setTrue) this.isTrue = true;
+    }
   }
 
   createCardError(input: HTMLInputElement) {
@@ -364,19 +264,21 @@ class Popup {
     parent.append(errorLable);
   }
 
-  removeError(input: HTMLElement) {
-    const parent = input.parentNode as HTMLElement;
-    const errorLable = parent.querySelector('.popup-form__error') as HTMLElement;
-    if (input.classList.contains('error')) {
-      errorLable.remove();
-    }
-  }
-
-  removeCardError(input: HTMLInputElement) {
+  setCardError(input: HTMLInputElement, cb: (str: string) => boolean, setTrue = false) {
     const classEl = input.dataset.control as string;
-    const errorLable = document.querySelector(`.${classEl}`) as HTMLElement;
+    const errorLable: HTMLElement | null = document.querySelector(`.${classEl}`);
 
-    errorLable.remove();
+    if (!cb(input.value)) {
+      if (!errorLable) {
+        this.createCardError(input);
+      }
+      input.classList.add('error');
+      this.isTrue = false;
+    } else {
+      errorLable?.remove();
+      input.classList.remove('error');
+      if (setTrue) this.isTrue = true;
+    }
   }
 
   checkName(name: string) {
@@ -395,7 +297,7 @@ class Popup {
   }
 
   checkEmail(email: string) {
-    const rx = /^[a-z0-9._%+-]+@[a-z0-9-]+.+.[a-z]{2,4}$/i;
+    const rx = /^[_a-z0-9-+-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/i;
     return rx.test(email.toLowerCase());
   }
 
