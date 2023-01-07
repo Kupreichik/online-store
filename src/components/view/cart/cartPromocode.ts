@@ -9,7 +9,7 @@ class cartPromocode {
       innerHtml += `
       <div class="promo-codes__applie">
           <p>${el.name}: -${el.disc}%</p>
-          <button class="promo-codes__btn-remove promo-codes__btn ${el.id}">Remove</button>
+          <button id="${el.id}" class="promo-codes__btn-remove promo-codes__btn">Remove</button>
       </div>
     `;
     });
