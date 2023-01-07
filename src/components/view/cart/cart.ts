@@ -8,6 +8,7 @@ import { app } from '../../../index';
 class Cart {
   cartTotal: CartTotal = new CartTotal();
   cartPagination: СartPagination = new СartPagination();
+
   main = document.querySelector('.main') as HTMLElement;
 
   render(products: CartState[] = STATE.cartProducts.slice(0, STATE.cartItems)): string {
@@ -26,7 +27,7 @@ class Cart {
             </div>
             <div class="cart__item-prices">
               <p class="cart__item-text cart__item-price">${product.price}$</p>
-              <p class="cart__item-text cart__item-accent">(stock: ${product.stock})</p>
+              <p class="cart__item-text cart__item-accent">(stock: ${product.category[0]})</p>
             </div>
             <div class="cart__add">
               <button class="cart-btn minus" data-id="${product.id}">
@@ -69,8 +70,9 @@ class Cart {
           </div>
         </div>
       </div>
+      <div class="popup"></div>
         `;
-    return STATE.cartProducts.length === 0 ? `<p class="cart-empty" >Cart is Empty<p>` : html;
+    return STATE.cartProducts.length === 0 ? `<p class="cart-empty">Cart is Empty</p><div class="popup"></div>` : html;
   }
 
   setListeners(): void {

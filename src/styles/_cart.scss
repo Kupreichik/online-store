@@ -169,9 +169,11 @@
 }
 
 .cart__total-btn {
+  position: relative;
   color: white;
   background: $green;
   cursor: pointer;
+  z-index: 1;
 }
 
 .cart__promo-hint {
