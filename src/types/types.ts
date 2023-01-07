@@ -2,6 +2,8 @@ export type routerMode = 'history' | 'hash';
 
 export type callbackType = (...arg: string[]) => void;
 
+export type regExpCallBack = (string: string) => boolean;
+
 export enum SortKind {
   popular = 'Most Popular',
   alphabetUp = 'Alphabet A - Z',

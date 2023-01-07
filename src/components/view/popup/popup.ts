@@ -1,15 +1,17 @@
 import { STATE } from '../../state/State';
 import { app } from '../../../index';
+import { cardsLogoUrls } from '../../../data/cardsLogo';
+import { regExpCallBack } from '../../../types/types';
+import * as popupValidation from './popupValidation';
 
 class Popup {
-  isTrue = false;
+  isFormValid = false;
   render() {
     return `
       <div class="popup__inner">
         <form action="" class="popup-form">
           <div class="popup-form__person">
             <h2  class="popup-form__person-title">Personal details</h2>
-
             <div class="popup-form__name popup-form__item">
               <input
                 class="popup-form__name-input popup-form__item-input"
@@ -48,9 +50,9 @@ class Popup {
             <h2 class="popup-form__card-title">Credit card details</h2>
             <div class="popup-form__card-data">
               <div class="popup-form__card-number">
-                <img class="popup-form__card-img
+                <img class="popup-form__card-img"
                   alt="card logo"
-                  src="https://i.guim.co.uk/img/media/b73cc57cb1d46ae742efd06b6c58805e8600d482/16_0_2443_1466/master/2443.jpg?width=700&quality=85&auto=format&fit=max&s=fb1dca6cdd4589cd9ef2fc941935de71"
+                  src="${cardsLogoUrls.noLogo}"
                 />
                 <input
                   class="popup-form__card-number-input popup-form__card-item-input"
@@ -99,26 +101,28 @@ class Popup {
     const popupFormEmail = document.querySelector('.popup-form__email-input') as HTMLInputElement;
     const popupFormCardNumber = document.querySelector('.popup-form__card-number-input') as HTMLInputElement;
     const popupFormCardValid = document.querySelector('.popup-form__card-valid-input') as HTMLInputElement;
-    const popupFormCardCvv = document.querySelector('.popup-form__card-cvv-input') as HTMLInputElement;
+    const popupFormCardCVV = document.querySelector('.popup-form__card-cvv-input') as HTMLInputElement;
+
+    const inputData: [HTMLInputElement, regExpCallBack][] = [
+      [popupFormName, popupValidation.checkName],
+      [popupFormPhone, popupValidation.checkPhone],
+      [popupFormAdress, popupValidation.checkAdress],
+      [popupFormEmail, popupValidation.checkEmail],
+      [popupFormName, popupValidation.checkName],
+    ];
 
     popupForm.onsubmit = (event) => {
       event.preventDefault();
 
-      this.setError(popupFormName, this.checkName);
+      inputData.forEach(([input, cb]) => this.setError(input, cb));
 
-      this.setError(popupFormPhone, this.checkPhone);
+      this.setCardError(popupFormCardNumber, popupValidation.checkCardNumber);
 
-      this.setError(popupFormAdress, this.checkAdress);
+      this.setCardError(popupFormCardValid, popupValidation.checkCardValid);
 
-      this.setError(popupFormEmail, this.checkEmail);
+      this.setCardError(popupFormCardCVV, popupValidation.checkCardCVV);
 
-      this.setCardError(popupFormCardNumber, this.checkCardNumber);
-
-      this.setCardError(popupFormCardValid, this.checkValid);
-
-      this.setCardError(popupFormCardCvv, this.checkCvv);
-
-      if (this.isTrue) {
+      if (this.isFormValid) {
         const main = document.querySelector('.main') as HTMLElement;
         STATE.cartProducts = [];
         main.innerHTML = app.view.cart.render();
@@ -128,10 +132,12 @@ class Popup {
         body.classList.add('shadow');
 
         let count = 5;
-        popup.innerHTML = `<p class="popup-timer">Thanks for your order. Redirect to the store after ${count} sec<p>`;
+        popup.innerHTML = this.getRedirectMessage(count);
+
         const timer = setInterval(() => {
           count--;
-          popup.innerHTML = `<p class="popup-timer">Thanks for your order. Redirect to the store after ${count} sec<p>`;
+          popup.innerHTML = this.getRedirectMessage(count);
+
           if (count === 0) {
             clearInterval(timer);
             body.classList.remove('shadow');
@@ -141,21 +147,9 @@ class Popup {
       }
     };
 
-    popupFormName.oninput = () => {
-      this.setError(popupFormName, this.checkName, true);
-    };
-
-    popupFormPhone.oninput = () => {
-      this.setError(popupFormPhone, this.checkPhone, true);
-    };
-
-    popupFormAdress.oninput = () => {
-      this.setError(popupFormAdress, this.checkAdress, true);
-    };
-
-    popupFormEmail.oninput = () => {
-      this.setError(popupFormEmail, this.checkEmail, true);
-    };
+    inputData.forEach(([input, cb]) => {
+      input.oninput = () => this.setError(input, cb, true);
+    });
 
     popupFormCardNumber.oninput = (event) => {
       const popupFormCardImg = document.querySelector('.popup-form__card-img') as HTMLImageElement;
@@ -167,24 +161,27 @@ class Popup {
         .join(' ');
 
       if (target.value.match(/^5/)) {
-        popupFormCardImg.src = 'https://www.mastercard.hu/content/dam/public/mastercardcom/eu/hu/images/mc-logo-52.svg';
+        popupFormCardImg.src = cardsLogoUrls.mastercard;
       } else if (target.value.match(/^4/)) {
-        popupFormCardImg.src = 'https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png';
+        popupFormCardImg.src = cardsLogoUrls.visa;
       } else if (target.value.match(/^3/)) {
-        popupFormCardImg.src =
-          'https://www.aexp-static.com/cdaas/one/statics/axp-static-assets/1.8.0/package/dist/img/logos/dls-logo-stack.svg';
+        popupFormCardImg.src = cardsLogoUrls.americanExpress;
+      } else if (target.value.match(/^2/)) {
+        popupFormCardImg.src = cardsLogoUrls.unionPay;
+      } else if (target.value.match(/^1/)) {
+        popupFormCardImg.src = cardsLogoUrls.jcb;
       } else {
-        popupFormCardImg.src =
-          'https://i.guim.co.uk/img/media/b73cc57cb1d46ae742efd06b6c58805e8600d482/16_0_2443_1466/master/2443.jpg?width=700&quality=85&auto=format&fit=max&s=fb1dca6cdd4589cd9ef2fc941935de71';
+        popupFormCardImg.src = cardsLogoUrls.noLogo;
       }
 
-      this.setCardError(target, this.checkCardNumber, true);
+      this.setCardError(target, popupValidation.checkCardNumber, true);
 
       if (Number.isNaN(+target.value.replace(/\s/g, ''))) target.value = target.value.slice(0, -1);
     };
 
     popupFormCardValid.oninput = (event) => {
       const target = event.target as HTMLInputElement;
+
       if (target.value.length > 2) {
         target.value = target.value
           .replace(/\//g, '')
@@ -202,16 +199,16 @@ class Popup {
       if (target.value.length !== 5 || +new Date() < +new Date(targetDate) || +target.value.slice(0, 2) > 12) {
         if (!document.querySelector('.cardDate')) {
           this.createCardError(target);
-          this.isTrue = false;
+          this.isFormValid = false;
         }
       } else {
-        this.setCardError(target, this.checkValid, true);
+        this.setCardError(target, popupValidation.checkCardValid, true);
       }
     };
 
-    popupFormCardCvv.oninput = (event) => {
+    popupFormCardCVV.oninput = (event) => {
       const target = event.target as HTMLInputElement;
-      this.setCardError(target, this.checkCvv, true);
+      this.setCardError(target, popupValidation.checkCardCVV, true);
 
       if (Number.isNaN(+target.value)) target.value = target.value.slice(0, -1);
     };
@@ -230,21 +227,23 @@ class Popup {
   removeError(input: HTMLElement) {
     const parent = input.parentNode as HTMLElement;
     const errorLable = parent.querySelector('.popup-form__error') as HTMLElement;
+
     if (input.classList.contains('error')) {
       errorLable.remove();
     }
   }
 
-  setError(input: HTMLInputElement, cb: (str: string) => boolean, setTrue = false) {
+  setError(input: HTMLInputElement, cb: regExpCallBack, setTrue = false) {
     if (!cb(input.value)) {
       this.removeError(input);
       input.classList.add('error');
       this.createError(input);
-      this.isTrue = false;
+      this.isFormValid = false;
     } else {
       this.removeError(input);
       input.classList.remove('error');
-      if (setTrue) this.isTrue = true;
+
+      if (setTrue) this.isFormValid = true;
     }
   }
 
@@ -264,7 +263,7 @@ class Popup {
     parent.append(errorLable);
   }
 
-  setCardError(input: HTMLInputElement, cb: (str: string) => boolean, setTrue = false) {
+  setCardError(input: HTMLInputElement, cb: regExpCallBack, setTrue = false) {
     const classEl = input.dataset.control as string;
     const errorLable: HTMLElement | null = document.querySelector(`.${classEl}`);
 
@@ -273,47 +272,16 @@ class Popup {
         this.createCardError(input);
       }
       input.classList.add('error');
-      this.isTrue = false;
+      this.isFormValid = false;
     } else {
       errorLable?.remove();
       input.classList.remove('error');
-      if (setTrue) this.isTrue = true;
+      if (setTrue) this.isFormValid = true;
     }
   }
 
-  checkName(name: string) {
-    const rx = /^[a-zа-яё]{3,}\s[a-zа-яё]{3,}\D*/gi;
-    return rx.test(name.toLowerCase());
-  }
-
-  checkPhone(phone: string) {
-    const rx = /^\+\d{9,}/;
-    return rx.test(phone);
-  }
-
-  checkAdress(adress: string) {
-    const rx = /^[a-zа-яё]{5,}\s[a-zа-яё]{5,}\s[a-zа-яё]{5,}\D*/gi;
-    return rx.test(adress.toLowerCase());
-  }
-
-  checkEmail(email: string) {
-    const rx = /^[_a-z0-9-+-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/i;
-    return rx.test(email.toLowerCase());
-  }
-
-  checkCardNumber(cardNumber: string) {
-    const rx = /\d{4}\s\d{4}\s\d{4}\s\d{4}/;
-    return rx.test(cardNumber);
-  }
-
-  checkValid(valid: string) {
-    const rx = /\d{2}\/\d{2}/;
-    return rx.test(valid);
-  }
-
-  checkCvv(cvv: string) {
-    const rx = /\d{3}/;
-    return rx.test(cvv);
+  getRedirectMessage(count: number) {
+    return `<p class="popup-timer">Thanks for your order. Redirect to the store after ${count} sec<p>`;
   }
 }
 
