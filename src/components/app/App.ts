@@ -32,13 +32,17 @@ export class App {
         el.innerHTML = this.view.main.render();
         this.view.main.setListeners();
       })
-      .add(/cart/, () => {
+      .add(/^cart$/, () => {
         el.innerHTML = this.view.cart.render();
         if (STATE.cartProducts.length !== 0) this.view.cart.setListeners();
       })
-      .add(/id\/([0-9]*)/, (id: string) => {
-        el.innerHTML = this.view.product.render(id);
-        this.view.product.setListeners();
+      .add(/^id\/([0-9]*)/, (id: string) => {
+        try {
+          el.innerHTML = this.view.product.render(id);
+          this.view.product.setListeners();
+        } catch {
+          this.view.render404page();
+        }
       });
   }
 }
