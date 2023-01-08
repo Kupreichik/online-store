@@ -81,21 +81,26 @@ class Cart {
 
     //add and remove product
     const cartItems = document.querySelector('.cart__items') as HTMLElement;
+
     cartItems.onclick = (event) => {
       const target = event.target as HTMLElement;
+
       if (target.classList.contains('plus')) {
         this.addProduct(target.dataset.id as string);
         this.cartTotal.changeValue();
       } else if (target.classList.contains('minus')) {
         this.removeProduct(target.dataset.id as string);
+
         if (STATE.cartProducts.length !== 0) this.cartTotal.changeValue();
       }
     };
 
     //change input
     const cartProductsInput = document.querySelector('.cart__products-input') as HTMLInputElement;
+
     cartProductsInput.oninput = () => {
       if (+cartProductsInput.value < 1) cartProductsInput.value = '1';
+
       app.controller.setActualState('items', cartProductsInput.value);
       const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
       this.main.innerHTML = this.render(chank);
@@ -105,25 +110,21 @@ class Cart {
 
     //prev page cart
     const prev = document.querySelector('.prev') as HTMLElement;
+
     prev.onclick = () => {
       if (STATE.cartPage > 1) {
         STATE.cartPage--;
-        app.controller.setSearchParams('page', `${STATE.cartPage}`);
-        const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
-        this.main.innerHTML = this.render(chank);
-        this.setListeners();
+        this.renderChank();
       }
     };
 
     //next page cart
     const next = document.querySelector('.next') as HTMLElement;
+
     next.onclick = () => {
       if (STATE.cartPage < STATE.cartProducts.length / STATE.cartItems) {
         STATE.cartPage++;
-        app.controller.setSearchParams('page', `${STATE.cartPage}`);
-        const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
-        this.main.innerHTML = this.render(chank);
-        this.setListeners();
+        this.renderChank();
       }
     };
   }
@@ -134,6 +135,7 @@ class Cart {
     this.cartTotal.changeValue();
     (this.main.querySelector(`#id${id} > .cart__add > p.counter`) as HTMLElement).innerHTML = count.toString();
     app.controller.setHeaderCart();
+
     if (STATE.cartPromocode.length > 0)
       (document.querySelector(
         '.cart__total-sale'
@@ -143,6 +145,7 @@ class Cart {
   //minus product
   removeProduct(id: string): void {
     const count = app.controller.removeProdFromCart(+id);
+
     if (count) {
       this.cartTotal.changeValue();
       (this.main.querySelector(`#id${id} > .cart__add > p.counter`) as HTMLElement).innerHTML = count.toString();
@@ -153,6 +156,7 @@ class Cart {
     } else {
       const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
       this.main.innerHTML = this.render(chank);
+
       if (STATE.cartProducts.length !== 0) this.setListeners();
     }
   }
@@ -163,6 +167,13 @@ class Cart {
       app.controller.setSearchParams('page', `${STATE.cartPage}`);
     }
     return STATE.cartPage;
+  }
+
+  renderChank(): void {
+    app.controller.setSearchParams('page', `${STATE.cartPage}`);
+    const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
+    this.main.innerHTML = this.render(chank);
+    this.setListeners();
   }
 }
 

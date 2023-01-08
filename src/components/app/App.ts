@@ -34,7 +34,7 @@ export class App {
       })
       .add(/^cart$/, () => {
         el.innerHTML = this.view.cart.render();
-        if (STATE.cartProducts.length !== 0) this.view.cart.setListeners();
+        if (STATE.cartProducts.length !== 0) this.view.cart.renderChank();
       })
       .add(/^id\/([0-9]*)/, (id: string) => {
         try {
