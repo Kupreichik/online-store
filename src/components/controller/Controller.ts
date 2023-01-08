@@ -70,7 +70,6 @@ export class Controller {
     }
 
     STATE.products = this.productFilter();
-    console.log(STATE);
     if (isRerender) {
       app.router.resolveRoute();
     }
