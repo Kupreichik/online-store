@@ -25,11 +25,11 @@ class Cart {
             </a>
             <div class="cart__item-title">
               <p class="cart__item-text">${product.title}</p>
-              <p class="cart__item-text cart__item-accent">${product.light}</p>
+              <p class="cart__item-text cart__item-accent">${product.category[0]}</p>
             </div>
             <div class="cart__item-prices">
               <p class="cart__item-text cart__item-price">${product.price}$</p>
-              <p class="cart__item-text cart__item-accent">(stock: ${product.category[0]})</p>
+              <p class="cart__item-text cart__item-accent">(stock: ${product.stock})</p>
             </div>
             <div class="cart__add">
               <button class="cart-btn minus" data-id="${product.id}">
