@@ -9,7 +9,7 @@ class СartPagination {
     const startEl = (page - 1) * items;
     const endEl = startEl + items;
 
-    if (pages < page) {
+    if (pages < page && pages > 0) {
       STATE.cartPage--;
       const cartProductsNumber = document.querySelector('.cart__products-number') as HTMLElement;
       cartProductsNumber.textContent = STATE.cartPage.toString();
