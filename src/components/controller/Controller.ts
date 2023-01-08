@@ -70,6 +70,7 @@ export class Controller {
     }
 
     STATE.products = this.productFilter();
+    console.log(STATE);
     if (isRerender) {
       app.router.resolveRoute();
     }
@@ -145,6 +146,7 @@ export class Controller {
   }
 
   private setStateAtArr(arr: string[], key: string, value: string): void {
+    if (value === '') arr = [];
     if (arr.includes(value)) {
       arr.splice(arr.indexOf(value), 1);
     } else {
