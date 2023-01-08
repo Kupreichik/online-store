@@ -172,13 +172,18 @@ export class Controller {
 
   removeProdFromCart(id: number, isDrop = false): number | undefined {
     const prod = STATE.cartProducts.find((prod) => prod.id === id) as CartState;
+
     if (isDrop || prod.count === 1) {
       STATE.cartProducts.splice(STATE.cartProducts.indexOf(prod), 1);
       this.setHeaderCart();
+
+      if (STATE.cartProducts.length === 0) STATE.cartPromocode = [];
+
       return undefined;
     } else {
       prod.count -= 1;
     }
+
     this.setHeaderCart();
     return prod.count;
   }
