@@ -2,12 +2,12 @@ import { productsData } from '../../../data/products';
 import { Product, CartState } from '../../../types/interfaces';
 import { STATE } from '../../state/State';
 import CartTotal from './cartTotal';
-import СartPagination from './cartPagination';
+import CartPagination from './cartPagination';
 import { app } from '../../../index';
 
 class Cart {
   cartTotal: CartTotal = new CartTotal();
-  cartPagination: СartPagination = new СartPagination();
+  cartPagination: CartPagination = new CartPagination();
 
   main = document.querySelector('.main') as HTMLElement;
 
@@ -20,7 +20,9 @@ class Cart {
       htmlInner += `
           <div id="id${product.id}" class="cart__item">
             <p class="cart__item-text cart__item-number">${STATE.cartProducts.indexOf(elCart) + 1}</p>
-            <img class="cart__item-img"src="${product.images[0]}" alt="flower">
+            <a href="${window.location.search}#/id/${product.id}/">
+              <img class="cart__item-img"src="${product.images[0]}" alt="flower">
+            </a>
             <div class="cart__item-title">
               <p class="cart__item-text">${product.title}</p>
               <p class="cart__item-text cart__item-accent">${product.light}</p>
