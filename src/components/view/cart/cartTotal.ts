@@ -72,23 +72,39 @@ class CarTotal {
     }
 
     const cartTotalBtn = document.querySelector('.cart__total-btn') as HTMLElement;
-    const body = document.querySelector('body') as HTMLElement;
     const popup = document.querySelector('.popup') as HTMLElement;
     cartTotalBtn.onclick = () => {
-      body.classList.add('shadow');
-      popup.classList.add('shadow');
-      popup.innerHTML = this.popup.render();
-      this.popup.setListeners();
+      this.openPopup();
     };
 
-    popup.onclick = (event) => {
-      const target = event.target as HTMLElement;
-      if (target.classList.contains('shadow')) {
-        body.classList.remove('shadow');
-        popup.classList.remove('shadow');
-        popup.innerHTML = '';
-      }
+    popup.onmousedown = (event) => {
+      this.closePopup(event, popup);
     };
+
+    popup.ontouchstart = (event) => {
+      this.closePopup(event, popup);
+    };
+  }
+
+  openPopup() {
+    const body = document.querySelector('body') as HTMLElement;
+    const popup = document.querySelector('.popup') as HTMLElement;
+
+    body.classList.add('shadow');
+    popup.classList.add('shadow');
+    popup.innerHTML = this.popup.render();
+    this.popup.setListeners();
+  }
+
+  closePopup(event: Event, popup: HTMLElement) {
+    const body = document.querySelector('body') as HTMLElement;
+    const target = event.target as HTMLElement;
+
+    if (target.classList.contains('shadow')) {
+      body.classList.remove('shadow');
+      popup.classList.remove('shadow');
+      popup.innerHTML = '';
+    }
   }
 
   changeValue(): void {

@@ -72,6 +72,14 @@ export class ProductPage {
       app.controller.setActualState('cart', btn.value, false);
       btn.textContent = this.getCartButtonName();
     };
+
+    const buyBtn = document.querySelector('#product-buy') as HTMLButtonElement;
+    buyBtn.onclick = () => {
+      if (!STATE.cartProducts.find((item) => item.id === this.product.id)) app.controller.addProdToCart(+buyBtn.value);
+      window.history.replaceState(null, '', window.location.search + '#/cart/');
+      app.router.resolveRoute();
+      app.view.cart.cartTotal.openPopup();
+    };
   }
 
   private getCartButtonName(): string {
