@@ -192,11 +192,7 @@ class Popup {
 
       if (Number.isNaN(+target.value.replace(/\s/g, '').replace(/\//g, ''))) target.value = target.value.slice(0, -1);
 
-      const targetDate: string = target.value
-        .split('/')
-        .reduce((acc, el, i) => (i === 0 ? acc + el + '/01/' : acc + ('20' + el)), '');
-
-      if (target.value.length !== 5 || +new Date() < +new Date(targetDate) || +target.value.slice(0, 2) > 12) {
+      if (target.value.length !== 5 || +target.value.slice(0, 2) > 12) {
         if (!document.querySelector('.cardDate')) {
           this.createCardError(target);
           this.isFormValid = false;
