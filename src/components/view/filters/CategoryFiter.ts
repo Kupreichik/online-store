@@ -25,6 +25,6 @@ export class CategoryFilter extends FilterCheckbox {
 
   listener(): void {
     const inputs: NodeListOf<HTMLInputElement> = document.querySelectorAll('.category');
-    inputs.forEach((el) => (el.oninput = () => app.controller.setActualState('category', el.value)));
+    inputs.forEach((el) => (el.oninput = () => app.controller.appStateControl('category', el.value)));
   }
 }

@@ -39,8 +39,6 @@ export class SortForm {
 
   listener(): void {
     const selectEl = document.querySelector('.products__sort-select') as HTMLSelectElement;
-    selectEl.onchange = () => {
-      app.controller.setActualState('sort', `${selectEl.value}`);
-    };
+    selectEl.onchange = () => app.controller.appStateControl('sort', selectEl.value);
   }
 }

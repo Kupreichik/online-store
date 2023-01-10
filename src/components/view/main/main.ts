@@ -84,12 +84,9 @@ export class Main {
     };
 
     const tileBtn = document.querySelector('.products__sort-tile') as HTMLElement;
-    tileBtn.onclick = () => {
-      app.controller.setActualState('sortView', 'tile');
-    };
+    tileBtn.onclick = () => app.controller.appStateControl('sortView', 'tile');
+
     const listBtn = document.querySelector('.products__sort-list') as HTMLElement;
-    listBtn.onclick = () => {
-      app.controller.setActualState('sortView', 'list');
-    };
+    listBtn.onclick = () => app.controller.appStateControl('sortView', 'list');
   }
 }

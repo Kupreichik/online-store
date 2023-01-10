@@ -1,8 +1,9 @@
 import { promocodesData } from '../../../data/promocodes';
 import { app } from '../../../index';
-import * as appState from '../../state/State';
+import * as appState from '../../state/appState';
 import cartPromocode from './cartPromocode';
 import Popup from '../popup/popup';
+import { STATE } from '../../state/State';
 
 class CarTotal {
   cartPromocode: cartPromocode = new cartPromocode();
@@ -11,11 +12,11 @@ class CarTotal {
     return `
         <h2 class="cart__total-title">Summary</h2>
         <div class="cart__total-spec">
-          <div class="cart__total-products"><span>Products:</span> ${app.controller.getAmountCart()}</div>
+          <div class="cart__total-products"><span>Products:</span> ${appState.getAmountCart()}</div>
           <div class="cart__total-price" ${appState.hasPromocode() ? 'style="text-decoration: line-through"' : ''}>
-          Total: ${app.controller.getSumPrice()} $</div>
+          Total: ${appState.getSumPrice()} $</div>
           <div class="cart__total-sale"> ${
-            appState.hasPromocode() ? 'Total: ' + app.controller.getSumPriceWithPromo() + '$' : ''
+            appState.hasPromocode() ? 'Total: ' + appState.getSumPriceWithPromo() + '$' : ''
           }</div>
         </div>
         <div class="cart__promo">
@@ -26,7 +27,7 @@ class CarTotal {
           <div class="promo-codes__prev"></div>
         </div>
         <div class="promo-codes">${
-          appState.hasPromocode() ? this.cartPromocode.renderAdd(appState.STATE.cartPromocode) : ''
+          appState.hasPromocode() ? this.cartPromocode.renderAdd(STATE.cartPromocode) : ''
         }</div>
         <button class="cart__total-btn btn">Buy Now</button>
     `;
@@ -51,7 +52,7 @@ class CarTotal {
 
         addBtn.onclick = () => {
           addBtn.style.display = 'none';
-          appState.appPromocode(promocode);
+          appState.addPromocode(promocode);
           this.refreshCartTotal(cartTotal);
         };
       } else {
@@ -110,12 +111,12 @@ class CarTotal {
   changeValue(): void {
     const cartTotalProducts = document.querySelector('.cart__total-products') as HTMLElement;
     cartTotalProducts.innerHTML = `
-      <span>Products: </span>${app.controller.getAmountCart()}
+      <span>Products: </span>${appState.getAmountCart()}
     `;
 
     const cartTotalPrice = document.querySelector('.cart__total-price') as HTMLElement;
     cartTotalPrice.innerHTML = `
-      <span>Total: </span>${app.controller.getSumPrice()} $
+      <span>Total: </span>${appState.getSumPrice()} $
     `;
   }
 

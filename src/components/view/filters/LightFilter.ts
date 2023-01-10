@@ -23,6 +23,6 @@ export class LightFilter extends FilterCheckbox {
 
   listener(): void {
     const inputs: NodeListOf<HTMLInputElement> = document.querySelectorAll('.light');
-    inputs.forEach((el) => (el.oninput = () => app.controller.setActualState('light', el.value)));
+    inputs.forEach((el) => (el.oninput = () => app.controller.appStateControl('light', el.value)));
   }
 }

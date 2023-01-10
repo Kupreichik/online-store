@@ -1,100 +1,25 @@
-import { productsData } from '../../data/products';
 import { app } from '../../index';
-import { CartPromocodeState, CartState, Product } from '../../types/interfaces';
-import { SortKind, SortView } from '../../types/types';
+import * as appState from '../state/appState';
 import { STATE, DEFAULT_STATE } from '../state/State';
 
 export class Controller {
-  setActualState(key: string, value: string, isRerender = true): void {
-    switch (key) {
-      case 'category':
-        this.setStateAtArr(STATE.filters.category, key, value);
-        break;
-
-      case 'light':
-        this.setStateAtArr(STATE.filters.light, key, value);
-        break;
-
-      case 'price-min':
-        STATE.filters.price.min = parseInt(value);
-        this.setSearchParams(key, value);
-        break;
-
-      case 'price-max':
-        STATE.filters.price.max = parseInt(value);
-        this.setSearchParams(key, value);
-        break;
-
-      case 'stock-min':
-        STATE.filters.stock.min = parseInt(value);
-        this.setSearchParams(key, value);
-        break;
-
-      case 'stock-max':
-        STATE.filters.stock.max = parseInt(value);
-        this.setSearchParams(key, value);
-        break;
-
-      case 'sort':
-        STATE.sortIndex = value as SortKind;
-        this.setSearchParams(key, value);
-        break;
-
-      case 'search':
-        STATE.filters.search = value;
-        this.setSearchParams(key, value);
-        break;
-
-      case 'sortView':
-        STATE.sortView = value as SortView;
-        this.setSearchParams(key, value);
-        break;
-
-      case 'cart':
-        if (STATE.cartProducts.find((prod) => prod.id === +value)) {
-          this.removeProdFromCart(+value, true);
-        } else {
-          this.addProdToCart(+value);
-        }
-        break;
-
-      case 'items':
-        STATE.cartItems = +value;
-        this.setSearchParams(key, value);
-        break;
-
-      case 'page':
-        STATE.cartPage = +value;
-        this.setSearchParams(key, value);
-        break;
+  appStateControl(key: string, value: string, isRerender = true) {
+    appState.setActualState(key, value);
+    if (key === 'cart') {
+      this.setHeaderCart();
+    } else {
+      if (key === 'category') value = STATE.filters.category.toString();
+      if (key === 'light') value = STATE.filters.light.toString();
+      this.setSearchParams(key, value);
     }
-
-    STATE.products = this.productFilter();
     if (isRerender) {
       app.router.resolveRoute();
     }
   }
 
-  private productFilter(): Product[] {
-    const { search, category, price, stock, light } = STATE.filters;
-    const products: Product[] = productsData
-      .filter((prod) =>
-        search === ''
-          ? true
-          : [prod.title, prod.description, prod.price.toString(), prod.stock.toString(), ...prod.category].some((str) =>
-              str.toLowerCase().match(new RegExp(search, 'gui'))
-            )
-      )
-      .filter((prod) => category.every((ctgr) => prod.category.includes(ctgr)))
-      .filter((prod) => (light.length === 0 ? true : light.some((lgt) => prod.light === lgt)))
-      .filter((prod) => prod.price >= price.min && prod.price <= price.max)
-      .filter((prod) => prod.stock >= stock.min && prod.stock <= stock.max);
-    return products;
-  }
-
   resetFilters(): void {
     STATE.filters = structuredClone(DEFAULT_STATE.filters);
-    STATE.products = this.productFilter();
+    STATE.products = appState.productFilter();
     this.resetFilterParams();
     app.router.resolveRoute();
   }
@@ -123,7 +48,7 @@ export class Controller {
       state.map(([key, values]) => {
         values.split('%2C').map((val) => {
           val = decodeURIComponent(val);
-          this.setActualState(key, val.replace(/\+/gi, ' '), false);
+          appState.setActualState(key, val.replace(/\+/gi, ' '));
         });
       });
       this.setLinkHref();
@@ -144,68 +69,10 @@ export class Controller {
     });
   }
 
-  private setStateAtArr(arr: string[], key: string, value: string): void {
-    if (value === '') arr = [];
-    if (arr.includes(value)) {
-      arr.splice(arr.indexOf(value), 1);
-    } else {
-      arr.push(value);
-    }
-    this.setSearchParams(key, arr.toString());
-  }
-
-  addProdToCart(id: number): number {
-    let prod: CartState | undefined = STATE.cartProducts.find((prod) => prod.id === id);
-    const prodData = productsData.find((product) => product.id === id) as Product;
-    if (prod) {
-      if (prod.count < prodData.stock) prod.count += 1;
-    } else {
-      prod = {
-        id: id,
-        count: 1,
-        price: prodData.price,
-      };
-      STATE.cartProducts.push(prod);
-    }
-    this.setHeaderCart();
-    return prod.count;
-  }
-
-  removeProdFromCart(id: number, isDrop = false): number | undefined {
-    const prod = STATE.cartProducts.find((prod) => prod.id === id) as CartState;
-
-    if (isDrop || prod.count === 1) {
-      STATE.cartProducts.splice(STATE.cartProducts.indexOf(prod), 1);
-      this.setHeaderCart();
-
-      if (STATE.cartProducts.length === 0) STATE.cartPromocode = [];
-
-      return undefined;
-    } else {
-      prod.count -= 1;
-    }
-
-    this.setHeaderCart();
-    return prod.count;
-  }
-
-  getAmountCart(): number {
-    return STATE.cartProducts.reduce((curr, prod) => curr + prod.count, 0);
-  }
-
-  getSumPrice(): number {
-    return STATE.cartProducts.reduce((curr, prod) => curr + prod.count * prod.price, 0);
-  }
-
-  getSumPriceWithPromo(): number {
-    const promo = STATE.cartPromocode.reduce((acc, el) => acc + el.disc / 100, 0);
-    return Math.round(this.getSumPrice() - this.getSumPrice() * promo);
-  }
-
   setHeaderCart(): void {
     (document.querySelector('.header__total-price') as HTMLElement).innerText =
-      STATE.cartPromocode.length > 0 ? `${this.getSumPriceWithPromo()}$` : `${this.getSumPrice()}$`;
-    (document.querySelector('.header__cart-count') as HTMLElement).innerText = `(${this.getAmountCart()})`;
+      STATE.cartPromocode.length > 0 ? `${appState.getSumPriceWithPromo()}$` : `${appState.getSumPrice()}$`;
+    (document.querySelector('.header__cart-count') as HTMLElement).innerText = `(${appState.getAmountCart()})`;
   }
 
   setLocalStorage(): void {
@@ -221,9 +88,5 @@ export class Controller {
       STATE.cartPromocode = JSON.parse(localStorage.getItem('cartPromocode') as string);
     }
     this.setHeaderCart();
-  }
-
-  addPromocode(data: CartPromocodeState): void {
-    STATE.cartPromocode.push(data);
   }
 }

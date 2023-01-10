@@ -25,8 +25,6 @@ export class SearchFilter {
       el.focus();
       el.selectionStart = el.value.length;
     }
-    el.oninput = () => {
-      app.controller.setActualState('search', el.value);
-    };
+    el.oninput = () => app.controller.appStateControl('search', el.value);
   }
 }
