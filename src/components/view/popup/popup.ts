@@ -103,7 +103,7 @@ class Popup {
     const popupFormCardValid = document.querySelector('.popup-form__card-valid-input') as HTMLInputElement;
     const popupFormCardCVV = document.querySelector('.popup-form__card-cvv-input') as HTMLInputElement;
 
-    const inputData: [HTMLInputElement, regExpCallBack][] = [
+    const inputData: [HTMLInputElement, regExpCallBack<string>][] = [
       [popupFormName, popupValidation.checkName],
       [popupFormPhone, popupValidation.checkPhone],
       [popupFormAdress, popupValidation.checkAdress],
@@ -233,7 +233,7 @@ class Popup {
     }
   }
 
-  setError(input: HTMLInputElement, cb: regExpCallBack, setTrue = false) {
+  setError(input: HTMLInputElement, cb: regExpCallBack<string>, setTrue = false) {
     if (!cb(input.value)) {
       this.removeError(input);
       input.classList.add('error');
@@ -263,7 +263,7 @@ class Popup {
     parent.append(errorLable);
   }
 
-  setCardError(input: HTMLInputElement, cb: regExpCallBack, setTrue = false) {
+  setCardError(input: HTMLInputElement, cb: regExpCallBack<string>, setTrue = false) {
     const classEl = input.dataset.control as string;
     const errorLable: HTMLElement | null = document.querySelector(`.${classEl}`);
 
