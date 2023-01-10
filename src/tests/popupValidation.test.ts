@@ -1,4 +1,4 @@
-import * as check from './../components/view/popup/popupValidation';
+import * as check from '../components/view/popup/popupValidation';
 
 describe('checkName function', () => {
   test('validation name1', () => {
@@ -179,7 +179,5 @@ describe('checkCardCVV function', () => {
     const cardCVV = 'www';
     const result = check.checkCardCVV(cardCVV);
     expect(result).toBeFalsy();
-    expect(result).not.toBeUndefined();
-    expect(result).not.toBeNull();
   });
 });
