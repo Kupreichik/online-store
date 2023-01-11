@@ -78,7 +78,7 @@ export function productFilter(): Product[] {
   return products;
 }
 
-function setStateAtArr(arr: string[], value: string): void {
+export function setStateAtArr(arr: string[], value: string): void {
   if (value === '') arr = [];
   if (arr.includes(value)) {
     arr.splice(arr.indexOf(value), 1);
