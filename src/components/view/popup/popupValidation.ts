@@ -24,7 +24,7 @@ export function checkCardNumber(cardNumber: string) {
 }
 
 export function checkCardValid(valid: string) {
-  const rx = /\d{2}\/\d{2}/;
+  const rx = /^(0[1-9]|1[012])\/\d{2}/;
   return rx.test(valid);
 }
 

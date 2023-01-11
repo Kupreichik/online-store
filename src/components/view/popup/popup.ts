@@ -192,14 +192,7 @@ class Popup {
 
       if (Number.isNaN(+target.value.replace(/\s/g, '').replace(/\//g, ''))) target.value = target.value.slice(0, -1);
 
-      if (target.value.length !== 5 || +target.value.slice(0, 2) > 12) {
-        if (!document.querySelector('.cardDate')) {
-          this.createCardError(target);
-          this.isFormValid = false;
-        }
-      } else {
-        this.setCardError(target, popupValidation.checkCardValid, true);
-      }
+      this.setCardError(target, popupValidation.checkCardValid, true);
     };
 
     popupFormCardCVV.oninput = (event) => {
