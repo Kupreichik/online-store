@@ -22,14 +22,14 @@ describe('getAmountCart function', () => {
     ];
 
     const result = getAmountCart();
-    expect(result).toBeGreaterThan(0);
+    expect(result).toEqual(6);
   });
 
   test('amount in empty cart', () => {
     STATE.cartProducts = [];
 
     const result = getAmountCart();
-    expect(result).toBeLessThan(1);
+    expect(result).toEqual(0);
   });
 });
 
@@ -54,14 +54,14 @@ describe('getSumPrice function', () => {
     ];
 
     const result = getSumPrice();
-    expect(result).toBeGreaterThanOrEqual(0);
+    expect(result).toEqual(380);
   });
 
   test('amount in empty cart', () => {
     STATE.cartProducts = [];
 
     const result = getSumPrice();
-    expect(result).toBeLessThanOrEqual(1);
+    expect(result).toEqual(0);
     expect(result).not.toBeUndefined();
     expect(result).not.toBeNull();
   });
