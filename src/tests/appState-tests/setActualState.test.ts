@@ -1,96 +1,76 @@
+import { setActualState } from '../../components/state/appState';
 import { DEFAULT_STATE, resetState, STATE } from '../../components/state/State';
-import { productsData } from '../../data/products';
-import { SortKind, SortView } from '../../types/types';
-
-const setStateAtArr = jest.fn((arr: string[], value: string) => `set value ${value} at array ${arr}`);
-const removeProdFromCart = jest.fn(
-  (id: number, bool: boolean) => `reduces the amount product ${id} from cart or drop if ${bool}`
-);
-const addProdToCart = jest.fn((id: number) => `add product ${id} to cart`);
-const productFilter = jest.fn(() => productsData);
-
-function setActualState(key: string, value: string): void {
-  switch (key) {
-    case 'category':
-      setStateAtArr(STATE.filters.category, value);
-      break;
-
-    case 'light':
-      setStateAtArr(STATE.filters.light, value);
-      break;
-
-    case 'price-min':
-      STATE.filters.price.min = parseInt(value);
-      break;
-
-    case 'price-max':
-      STATE.filters.price.max = parseInt(value);
-      break;
-
-    case 'stock-min':
-      STATE.filters.stock.min = parseInt(value);
-      break;
-
-    case 'stock-max':
-      STATE.filters.stock.max = parseInt(value);
-      break;
-
-    case 'sort':
-      STATE.sortIndex = value as SortKind;
-      break;
-
-    case 'search':
-      STATE.filters.search = value;
-      break;
-
-    case 'sortView':
-      STATE.sortView = value as SortView;
-      break;
-
-    case 'cart':
-      if (STATE.cartProducts.find((prod) => prod.id === +value)) {
-        removeProdFromCart(+value, true);
-      } else {
-        addProdToCart(+value);
-      }
-      break;
-
-    case 'items':
-      STATE.cartItems = +value;
-      break;
-
-    case 'page':
-      STATE.cartPage = +value;
-      break;
-  }
-
-  STATE.products = productFilter();
-}
+import { SortKind } from '../../types/types';
 
 describe('setActualState function', () => {
   let key, value;
 
   afterEach(() => resetState());
 
-  test(`should call setStateAtArr function at case 'category'`, () => {
+  test(`should add given category in state at case 'category'`, () => {
     key = 'category';
     value = 'some-category';
-    const expectArg = STATE.filters.category;
+    const value2 = 'else-category';
+    const expected = ['some-category', 'else-category'];
+    const checked = STATE.filters.category;
+
     setActualState(key, value);
-    expect(setStateAtArr).toHaveBeenCalled();
-    expect(setStateAtArr).toHaveBeenCalledWith(expectArg, value);
-    expect(setStateAtArr.mock.calls).toHaveLength(1);
-    setStateAtArr.mockClear();
+    expect(checked.length).toBe(1);
+    expect(checked[0]).toBe(expected[0]);
+
+    setActualState(key, value2);
+    expect(checked.length).toBe(2);
+    expect(checked[1]).toBe(expected[1]);
+    expect(checked).toEqual(expected);
   });
 
-  test(`should call setStateAtArr function at case 'light'`, () => {
+  test(`should remove given category from state, if category already was in state at case 'category'`, () => {
+    key = 'category';
+    value = 'some-category';
+    const value2 = 'else-category';
+    STATE.filters.category = ['some-category', 'else-category'];
+    const checked = STATE.filters.category;
+
+    setActualState(key, value);
+    expect(checked.length).toBe(1);
+    expect(checked).not.toContain(value);
+
+    setActualState(key, value2);
+    expect(checked.length).toBe(0);
+    expect(checked).not.toContain(value2);
+  });
+
+  test(`should add given value in state at case 'light'`, () => {
     key = 'light';
     value = 'some-value';
-    const expectArg = STATE.filters.light;
+    const value2 = 'else-value';
+    const expected = ['some-value', 'else-value'];
+    const checked = STATE.filters.light;
+
     setActualState(key, value);
-    expect(setStateAtArr).toHaveBeenCalled();
-    expect(setStateAtArr).toHaveBeenCalledWith(expectArg, value);
-    expect(setStateAtArr.mock.calls).toHaveLength(1);
+    expect(checked.length).toBe(1);
+    expect(checked[0]).toBe(expected[0]);
+
+    setActualState(key, value2);
+    expect(checked.length).toBe(2);
+    expect(checked[1]).toBe(expected[1]);
+    expect(checked).toEqual(expected);
+  });
+
+  test(`should remove given value from state, if value already was in state at case 'light'`, () => {
+    key = 'light';
+    value = 'some-value';
+    const value2 = 'else-value';
+    STATE.filters.light = ['some-value', 'else-value'];
+    const checked = STATE.filters.light;
+
+    setActualState(key, value);
+    expect(checked.length).toBe(1);
+    expect(checked).not.toContain(value);
+
+    setActualState(key, value2);
+    expect(checked.length).toBe(0);
+    expect(checked).not.toContain(value2);
   });
 
   test(`should set price as number in satate at case 'price-min'`, () => {
@@ -164,25 +144,43 @@ describe('setActualState function', () => {
     expect(checked).toBe(value);
   });
 
-  test(`should call addProdToCart function if product with given id absent in cart at case 'cart'`, () => {
+  test(`should add product in cart if product with given id absent in cart at case 'cart'`, () => {
     key = 'cart';
     value = '5';
-    const cbArg = parseInt(value);
+    const value2 = '15';
+    const expected = [
+      { id: 5, count: 1, price: 84 },
+      { id: 15, count: 1, price: 48 },
+    ];
+    const checked = STATE.cartProducts;
+
     setActualState(key, value);
-    expect(addProdToCart).toHaveBeenCalled();
-    expect(addProdToCart.mock.calls[0][0]).toBe(cbArg);
-    addProdToCart.mockClear();
+    expect(checked.length).toBe(1);
+    expect(checked[0]).toEqual(expected[0]);
+
+    setActualState(key, value2);
+    expect(checked.length).toBe(2);
+    expect(checked[1]).toEqual(expected[1]);
+    expect(checked).toEqual(expected);
   });
 
-  test(`should call removeProdFromCart function if product with given id was in cart at case 'cart'`, () => {
+  test(`should remove product from cart if product with given id already was in cart at case 'cart'`, () => {
     key = 'cart';
     value = '5';
-    const cbArg = parseInt(value);
-    STATE.cartProducts.push({ id: 5, count: 1, price: 10 });
+    const value2 = '15';
+    STATE.cartProducts = [
+      { id: 5, count: 1, price: 84 },
+      { id: 15, count: 1, price: 48 },
+    ];
+    const checked = STATE.cartProducts;
+
     setActualState(key, value);
-    expect(removeProdFromCart).toHaveBeenCalled();
-    expect(removeProdFromCart.mock.calls[0][0]).toBe(cbArg);
-    removeProdFromCart.mockClear();
+    expect(checked.length).toBe(1);
+    expect(checked).not.toContain(value);
+
+    setActualState(key, value2);
+    expect(checked.length).toBe(0);
+    expect(checked).not.toContain(value2);
   });
 
   test(`should set items count of cart pagination as number in satate at case 'items'`, () => {
@@ -209,12 +207,6 @@ describe('setActualState function', () => {
     key = 'not valid key';
     value = 'something';
     setActualState(key, value);
-    const checked = STATE;
-    expect(checked).toEqual(DEFAULT_STATE);
-  });
-
-  test(`should call productFilter function in each call`, () => {
-    const callsCount = 14;
-    expect(productFilter.mock.calls).toHaveLength(callsCount);
+    expect(STATE).toEqual(DEFAULT_STATE);
   });
 });
