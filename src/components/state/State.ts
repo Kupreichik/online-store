@@ -1,5 +1,5 @@
 import { productsData } from '../../data/products';
-import { AppState, CartPromocodeState } from '../../types/interfaces';
+import { AppState } from '../../types/interfaces';
 import { SortKind } from '../../types/types';
 
 export const DEFAULT_STATE: AppState = {
@@ -25,20 +25,8 @@ export const DEFAULT_STATE: AppState = {
   products: productsData,
 };
 
-export const STATE: AppState = structuredClone(DEFAULT_STATE);
+export let STATE: AppState = structuredClone(DEFAULT_STATE);
 
-export function removePromocode(id: string) {
-  STATE.cartPromocode = STATE.cartPromocode.filter((el) => el.id !== id);
-}
-
-export function getPromocode(id: string) {
-  return STATE.cartPromocode.find((el) => el.id === id);
-}
-
-export function hasPromocode() {
-  return STATE.cartPromocode.length > 0;
-}
-
-export function appPromocode(promocode: CartPromocodeState) {
-  STATE.cartPromocode.push(promocode);
+export function resetState(): void {
+  STATE = structuredClone(DEFAULT_STATE);
 }

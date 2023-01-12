@@ -2,7 +2,7 @@ export type routerMode = 'history' | 'hash';
 
 export type callbackType = (...arg: string[]) => void;
 
-export type regExpCallBack = (string: string) => boolean;
+export type regExpCallBack<T> = (string: T) => boolean;
 
 export enum SortKind {
   popular = 'Most Popular',

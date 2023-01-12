@@ -108,7 +108,7 @@ export abstract class FilterDualSlider {
   }
 
   setSliderState(labelMin: HTMLElement, labelMax: HTMLElement): void {
-    app.controller.setActualState(this.sliderData.maxInputId, labelMax.innerText);
-    app.controller.setActualState(this.sliderData.minInputId, labelMin.innerText);
+    app.controller.appStateControl(this.sliderData.maxInputId, labelMax.innerText);
+    app.controller.appStateControl(this.sliderData.minInputId, labelMin.innerText);
   }
 }

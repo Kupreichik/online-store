@@ -57,6 +57,6 @@ export class mainCards {
 
   listener(): void {
     const btns: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.main-card_btn');
-    btns.forEach((btn) => (btn.onclick = () => app.controller.setActualState('cart', btn.value)));
+    btns.forEach((btn) => (btn.onclick = () => app.controller.appStateControl('cart', btn.value)));
   }
 }

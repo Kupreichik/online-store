@@ -1,7 +1,7 @@
 import { CartState } from '../../../types/interfaces';
 import { STATE } from '../../state/State';
 
-class СartPagination {
+class CartPagination {
   getChank(items: number, page: number): CartState[] {
     const arr = STATE.cartProducts;
     const pages = Math.ceil(arr.length / items);
@@ -20,4 +20,4 @@ class СartPagination {
   }
 }
 
-export default СartPagination;
+export default CartPagination;

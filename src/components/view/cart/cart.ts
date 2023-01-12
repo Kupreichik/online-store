@@ -4,6 +4,7 @@ import { STATE } from '../../state/State';
 import CartTotal from './cartTotal';
 import CartPagination from './cartPagination';
 import { app } from '../../../index';
+import * as appState from '../../state/appState';
 
 class Cart {
   cartTotal: CartTotal = new CartTotal();
@@ -78,10 +79,8 @@ class Cart {
   }
 
   setListeners(): void {
-    //add listners total
     this.cartTotal.setListeners();
 
-    //add and remove product
     const cartItems = document.querySelector('.cart__items') as HTMLElement;
 
     cartItems.onclick = (event) => {
@@ -97,20 +96,18 @@ class Cart {
       }
     };
 
-    //change input
     const cartProductsInput = document.querySelector('.cart__products-input') as HTMLInputElement;
 
     cartProductsInput.oninput = () => {
       if (+cartProductsInput.value < 1) cartProductsInput.value = '1';
 
-      app.controller.setActualState('items', cartProductsInput.value);
+      app.controller.appStateControl('items', cartProductsInput.value);
       const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
       this.main.innerHTML = this.render(chank);
       this.cartTotal.changeValue();
       this.setListeners();
     };
 
-    //prev page cart
     const prev = document.querySelector('.prev') as HTMLElement;
 
     prev.onclick = () => {
@@ -120,7 +117,6 @@ class Cart {
       }
     };
 
-    //next page cart
     const next = document.querySelector('.next') as HTMLElement;
 
     next.onclick = () => {
@@ -131,9 +127,9 @@ class Cart {
     };
   }
 
-  //plus product
   addProduct(id: string): void {
-    const count = app.controller.addProdToCart(+id);
+    const count = appState.addProdToCart(+id);
+    app.controller.setHeaderCart();
     this.cartTotal.changeValue();
     (this.main.querySelector(`#id${id} > .cart__add > p.counter`) as HTMLElement).innerHTML = count.toString();
     app.controller.setHeaderCart();
@@ -141,12 +137,12 @@ class Cart {
     if (STATE.cartPromocode.length > 0)
       (document.querySelector(
         '.cart__total-sale'
-      ) as HTMLElement).innerText = `Total: ${app.controller.getSumPriceWithPromo()}$`;
+      ) as HTMLElement).innerText = `Total: ${appState.getSumPriceWithPromo()}$`;
   }
 
-  //minus product
   removeProduct(id: string): void {
-    const count = app.controller.removeProdFromCart(+id);
+    const count = appState.removeProdFromCart(+id);
+    app.controller.setHeaderCart();
 
     if (count) {
       this.cartTotal.changeValue();
@@ -154,7 +150,7 @@ class Cart {
       if (STATE.cartPromocode.length > 0)
         (document.querySelector(
           '.cart__total-sale'
-        ) as HTMLElement).innerText = `Total: ${app.controller.getSumPriceWithPromo()}$`;
+        ) as HTMLElement).innerText = `Total: ${appState.getSumPriceWithPromo()}$`;
     } else {
       const chank = this.cartPagination.getChank(STATE.cartItems, STATE.cartPage);
       this.main.innerHTML = this.render(chank);
